@@ -1,0 +1,12 @@
+{
+    "name": "controller/app",
+    "authors": [
+        {
+            "name": "harisliv",
+            "email": "livieratos.theoxaris@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3"
+    }
+}
