@@ -36,5 +36,9 @@ echo $res->getBody();                 // {"type":"User"...'
 //echo var_export($res->getBody()->json());
  ?>
 
-<form action="newtask.php" method="post">
+<form action="showtaskstest.php" method="get">
+  <div class='form-group'>
+      <label for='id'>Course ID</label>
+      <input type='id' class='form-control' name='id' placeholder='Enter Course ID'>
+  </div>
   <input type="submit" value="Submit">
