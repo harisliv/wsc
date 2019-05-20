@@ -36,7 +36,7 @@ echo $res->getBody();                 // {"type":"User"...'
 //echo var_export($res->getBody()->json());
  ?>
 
-<form action="showtaskstest.php" method="get">
+<form action="showtaskstest.php" method="post">
   <div class='form-group'>
       <label for='id'>Course ID</label>
       <input type='id' class='form-control' name='id' placeholder='Enter Course ID'>
