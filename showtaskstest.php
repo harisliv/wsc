@@ -1,12 +1,10 @@
       <?php
       session_start();
+      //error_reporting(0);
 
 
       require "vendor/autoload.php";
       use GuzzleHttp\Client;
-
-
-
 
       //echo $_SESSION["authtoken"];
 
@@ -22,12 +20,12 @@
       //$data = json_decode($res->getBody());
       //echo $res->getHeaders();
       //var_dump($res);
-      echo $res->getBody();
+      $body = $res->getBody();
       //$data = explode(" ", $res->getBody());
       //echo $data['statusCode'];
-      //$string = $body->getContents();
-      //$json = json_decode($string);
-      //echo $json;
+      $string = $body->getContents();
+      $json = json_decode($string);
+      print_r($json->data->courses[0]->id);
       //echo $res->getReasonPhrase();           // 200
       //echo $res->getHeader('content-type'); // 'application/json; charset=utf8'
       //echo $res->getBody()->getContents();           // 200
