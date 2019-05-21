@@ -13,12 +13,17 @@ error_reporting(E_ALL);
 
 $client = new GuzzleHttp\Client();
 
-$title = $_POST['title'];
-$description = $_POST['description'];
-$deadline = $_POST['deadline'];
-$completed = $_POST['completed'];
+$id = $_POST['id'];
+$name = $_POST['name'];
+$curr = $_POST['curr'];
+$period = $_POST['period'];
+$active = $_POST['active'];
+$hours_theory = $_POST['hours_theory'];
+$hours_lab = $_POST['hours_lab'];
+$hours_practice = $_POST['hours_practice'];
 
-$res = $client->request('POST', 'http://localhost/v1/tasks' ,
+
+$res = $client->request('POST', 'http://localhost/shedulerapi/controller/course.php' ,
 [
         'headers' =>
           [
@@ -27,10 +32,13 @@ $res = $client->request('POST', 'http://localhost/v1/tasks' ,
 
         'json' =>
           [
-      'title' => $title,
-      'description' => $description,
-      'deadline' => $deadline,
-      'completed' => $completed
+      'id' => $id,
+      'name' => $name,
+      'curr' => $curr,
+      'active' => $active,
+      'hours_theory' => $hours_theory,
+      'hours_lab' => $hours_lab,
+      'hours_practice' => $hours_practice
           ]
 ]
 );
@@ -43,7 +51,7 @@ echo $res->getBody();                 // {"type":"User"...'
   $response = (string) $res->getBody();
   $json = json_decode($response);
   $messages = $json->messages;
-  $data = $json->data->tasks;
+  $data = $json->data->courses;
   //print_r($data->id);
   echo $data[0]->id;
 
