@@ -1,3 +1,6 @@
+<?php include "header.php"; ?>
+<?php include "footer.php"; ?>
+
 <?php
 
 require "vendor/autoload.php";
@@ -11,7 +14,7 @@ $fullname = $_POST['fullname'];
 $username = $_POST['username'];
 $password = $_POST['password'];
 
-$res = $client->request('POST', 'http://localhost/v1/users',
+$res = $client->request('POST', 'http://localhost/shedulerapi/users',
   [
   'json' =>
     [
@@ -22,16 +25,18 @@ $res = $client->request('POST', 'http://localhost/v1/users',
   ]
 );
 
-//echo $res->getStatusCode();           // 200
-//echo $res->getHeader('content-type'); // 'application/json; charset=utf8'
-echo $res->getBody();                 // {"type":"User"...'
 
-  $response = (string) $res->getBody();
-  //$json = json_decode($response);
-  //$token = $json->data->access_token;
-  //echo $token;
-  //setcookie("TestCookie", $token);
+$body = $res->getBody();
+$string = $body->getContents();
+$json = json_decode($string);
 
+headernav();
 
-//echo var_export($res->getBody()->json());
  ?>
+ <center><h1>USER INFO</h1></center>
+
+ <pre>full name : <?php print_r($json->data->fullname); ?></pre>
+ <br>
+ <pre><?php   print_r($json); ?></pre>
+
+ <?php footernav(); ?>
