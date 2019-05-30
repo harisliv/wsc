@@ -2,6 +2,9 @@
 <?php include "footer.php"; ?>
       <?php
       session_start();
+      ini_set('display_errors', 1);
+      ini_set('display_startup_errors', 1);
+      error_reporting(E_ALL);
       //error_reporting(0);
 
 
@@ -23,6 +26,7 @@
       $body = $res->getBody();
       $string = $body->getContents();
       $json = json_decode($string);
+      $messages = $json->messages;
 
       $_SESSION["courseid"]=$_POST['id'];
       $_SESSION["name"]=$json->data->courses[0]->name;
@@ -41,6 +45,7 @@
 
        ?>
        <center><h1>SHOW COURSE BY ID</h1></center>
+       <center><h1><?php echo $messages[0]; ?></h1></center>
 
        <pre>ID : <?php print_r($json->data->courses[0]->id); ?></pre>
        <br>
@@ -54,7 +59,7 @@
          </form>
            <br />
 
-           
+
 
        <pre><?php   print_r($json); ?></pre>
 
