@@ -25,7 +25,9 @@
     $response = (string) $res->getBody();
     $json = json_decode($response);
     $token = $json->data->access_token;
+    $sessid = $json->data->session_id;
     $_SESSION["authtoken"]=$token;
+    $_SESSION["sessionid"]=$sessid;
 
     headernav();
 

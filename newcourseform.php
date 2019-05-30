@@ -2,6 +2,7 @@
 <?php include "footer.php"; ?>
 
   <?php
+
   session_start();
 
   require "vendor/autoload.php";
@@ -38,6 +39,7 @@
         'id' => $id,
         'name' => $name,
         'curr' => $curr,
+        'period' => $period,
         'active' => $active,
         'hours_theory' => $hours_theory,
         'hours_lab' => $hours_lab,
@@ -51,7 +53,7 @@
     $json = json_decode($response);
     $messages = $json->messages;
     $data = $json->data->courses;
-    
+
     headernav();
 
      ?>

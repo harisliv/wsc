@@ -23,8 +23,8 @@
       $body = $res->getBody();
       $string = $body->getContents();
       $json = json_decode($string);
-      $_SESSION["courseid"]=$_POST['id'];
 
+      $_SESSION["courseid"]=$_POST['id'];
       $_SESSION["name"]=$json->data->courses[0]->name;
       $_SESSION["curr"]=$json->data->courses[0]->curr;
       $_SESSION["period"]=$json->data->courses[0]->period;
@@ -45,8 +45,17 @@
        <pre>ID : <?php print_r($json->data->courses[0]->id); ?></pre>
        <br>
        <center><h1>UPDATE COURSE</h1></center>
-       <form action="updatecourse.php" method="post">
-         <input type="submit" value="Submit">
+       <form action="updatecourse.php" method="post" id="form0">
+         <center><input type="submit" name="submit_0" value="UPDATE" form="form0"></center>
+         </form>
+         <center><h1>DELETE COURSE</h1></center>
+         <form action="deletesinglecourse.php" method="post" id="form1">
+           <center><input type="submit" name="submit_1" value="DELETE" form="form1"></center>
+         </form>
+           <br />
+
+           
+
        <pre><?php   print_r($json); ?></pre>
 
        <?php footernav(); ?>

@@ -30,8 +30,8 @@ function headernav()
             <a class="nav-item nav-link" href="http://localhost/wsc/searchcoursebyid.php">Search Course by ID</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/showallcourses.php">Show All Courses</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newcourse.php">Create New Course</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/updatecourse.php">Update Course</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/signup.php">Sign Up</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/logout.php">Log out</a>
         </div>
     </div>
 </nav>
