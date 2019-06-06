@@ -14,7 +14,7 @@
       //echo $_SESSION["authtoken"];
 
       $client = new GuzzleHttp\Client();
-      $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room.php',
+      $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
       'query' => ['day' => $_POST['day'], 'start_time' => $_POST['start_time']]
