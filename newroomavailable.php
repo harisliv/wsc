@@ -24,6 +24,19 @@
     $string = $body->getContents();
     $json = json_decode($string);
 
+    $client2 = new GuzzleHttp\Client();
+    $res2 = $client2->request('GET', 'http://localhost/shedulerapi/controller/timeslot.php',
+    [
+    'headers' => ['Authorization' => $_SESSION["authtoken"]]
+    ]
+    );
+
+
+
+    $body2 = $res2->getBody();
+    $string2 = $body2->getContents();
+    $json2 = json_decode($string2);
+
     headernav();
 
     ?>
@@ -37,15 +50,23 @@
                    <label>ROOM</label>
                    <select name='id_room'>
                      <?php for ($x = 0; $x <= $json->data->rows_returned; $x++) { ?>
-                     <option value="<?php print_r($json->data->rooms[$x]->id); ?>"><?php print_r($json->data->rooms[$x]->lektiko_room); ?></option>
+                     <option value="<?php print_r($json->data->rooms[$x]->id); ?>">
+                       <?php print_r($json->data->rooms[$x]->lektiko_room); ?>
+                     </option>
                    <?php } ?>
                    </select>
                  </div>
 
                <div class='form-group'>
-                   <label for='id_ts'>id_ts</label>
-                   <input type='id_ts' class='form-control' id='id_ts' name='id_ts' placeholder='Enter id_ts'>
-               </div>
+                   <label>id_ts</label>
+                   <select name='id_ts'>
+                     <?php for ($x = 0; $x <= $json2->data->rows_returned; $x++) { ?>
+                     <option value="<?php print_r($json2->data->timeslots[$x]->id); ?>">
+                       <?php print_r($json2->data->timeslots[$x]->start_time); echo " ";print_r($json2->data->timeslots[$x]->day); ?>
+                     </option>
+                   <?php } ?>
+                   </select>
+                 </div>
 
                <div class='form-group'>
                    <label for='id_acadsem'>id_acadsem</label>
