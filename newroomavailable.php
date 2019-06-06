@@ -1,53 +1,58 @@
-  <?php include "header.php"; ?>
-  <?php include "footer.php"; ?>
-  <?php session_start(); ?>
-  <?php headernav(); ?>
+    <?php include "header.php"; ?>
+    <?php include "footer.php"; ?>
+    <?php session_start();
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    error_reporting(0);
 
-  <center><h1>SIGN UP</h1></center>
+    require "vendor/autoload.php";
+    use GuzzleHttp\Client;
 
-     <form action="newroomavailableform.php" method="post">
+    //echo $_SESSION["authtoken"];
 
-             <div class='form-group'>
-                 <label for='id'>Course ID</label>
-                 <input type='id' class='form-control' id='courseid' name='id' placeholder='Enter Course ID'>
-             </div>
+    $client = new GuzzleHttp\Client();
+    $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room.php',
+    [
+    'headers' => ['Authorization' => $_SESSION["authtoken"]]
+    ]
+    );
 
-             <div class='form-group'>
-                 <label for='name'>name</label>
-                 <input type='name' class='form-control' id='name' name='name' placeholder='Enter name'>
-             </div>
 
-             <div class='form-group'>
-                 <label for='curr'>programma spoudwn</label>
-                 <input type='curr' class='form-control' id='curr' name='curr' placeholder='curr'>
-             </div>
 
-             <div class='form-group'>
-                 <label for='period'>period</label>
-                 <input type='period' class='form-control' id='period' name='period' placeholder='period'>
-             </div>
+    $body = $res->getBody();
+    $string = $body->getContents();
+    $json = json_decode($string);
 
-             <div class='form-group'>
-                 <label for='active'>active</label>
-                 <input type='active' class='form-control' id='active' name='active' placeholder='active'>
-             </div>
+    headernav();
 
-             <div class='form-group'>
-                 <label for='hours_theory'>hours_theory</label>
-                 <input type='hours_theory' class='form-control' id='hours_theory' name='hours_theory' placeholder='hours_theory'>
-             </div>
+    ?>
 
-             <div class='form-group'>
-                 <label for='hours_lab'>hours_lab</label>
-                 <input type='hours_lab' class='form-control' id='hours_lab' name='hours_lab' placeholder='hours_lab'>
-             </div>
 
-             <div class='form-group'>
-                 <label for='hours_practice'>period</label>
-                 <input type='hours_practice' class='form-control' id='hours_practice' name='hours_practice' placeholder='hours_practice'>
-             </div>
+    <center><h1>SIGN UP</h1></center>
 
-              <input type="submit" value="Submit">
-          </form>
+       <form action="newroomavailableform.php" method="post">
 
-  <?php footernav(); ?>
+               <div class='form-group'>
+                   <label>ROOM</label>
+                   <select name='id_room'>
+                     <?php for ($x = 0; $x <= $json->data->rows_returned; $x++) { ?>
+                     <option value="<?php print_r($json->data->rooms[$x]->id); ?>"><?php print_r($json->data->rooms[$x]->lektiko_room); ?></option>
+                   <?php } ?>
+                   </select>
+                 </div>
+
+               <div class='form-group'>
+                   <label for='id_ts'>id_ts</label>
+                   <input type='id_ts' class='form-control' id='id_ts' name='id_ts' placeholder='Enter id_ts'>
+               </div>
+
+               <div class='form-group'>
+                   <label for='id_acadsem'>id_acadsem</label>
+                   <input type='id_acadsem' class='form-control' id='id_acadsem' name='id_acadsem' placeholder='id_acadsem'>
+               </div>
+
+                <input type="submit" value="Submit">
+            </form>
+
+    <?php footernav(); ?>
