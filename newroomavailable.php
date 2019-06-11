@@ -37,6 +37,19 @@
     $string2 = $body2->getContents();
     $json2 = json_decode($string2);
 
+    $client3 = new GuzzleHttp\Client();
+    $res3 = $client3->request('GET', 'http://localhost/shedulerapi/controller/acad_sem.php',
+    [
+    'headers' => ['Authorization' => $_SESSION["authtoken"]]
+    ]
+    );
+
+
+
+    $body3 = $res3->getBody();
+    $string3 = $body3->getContents();
+    $json3 = json_decode($string3);
+
     headernav();
 
     ?>
@@ -69,11 +82,18 @@
                  </div>
 
                <div class='form-group'>
-                   <label for='id_acadsem'>id_acadsem</label>
-                   <input type='id_acadsem' class='form-control' id='id_acadsem' name='id_acadsem' placeholder='id_acadsem'>
-               </div>
+                   <label>id_acadsem</label>
+                   <select name='id_acadsem'>
+                     <?php for ($x = 0; $x <= $json3->data->rows_returned; $x++) { ?>
+                     <option value="<?php print_r($json3->data->acadsems[$x]->id); ?>">
+                       <?php print_r($json3->data->acadsems[$x]->lektiko_acadsem); ?>
+                     </option>
+                   <?php } ?>
+                   </select>
+                 </div>
 
-                <input type="submit" value="Submit">
+                 <input type="submit" value="Submit">
+
             </form>
 
     <?php footernav(); ?>
