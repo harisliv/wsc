@@ -70,7 +70,7 @@ try {
     headernav();
 
      ?>
-     <center><h1><?php echo $messages[0]; ?></h1></center>
+     <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
      <pre>ID : <?php print_r($data[0]->id); ?></pre>
      <br>

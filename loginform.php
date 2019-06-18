@@ -8,8 +8,11 @@
 
   $client = new GuzzleHttp\Client();
 
-  $username = $_POST['username'];
-  $password = $_POST['password'];
+  try {
+
+  (empty($_POST['username'])  ? $username = NULL : $username = $_POST['username']);
+  (empty($_POST['password'])  ? $password = NULL : $password = $_POST['password']);
+
 
   $res = $client->request('POST', 'http://localhost/shedulerapi/sessions',
     [
@@ -29,11 +32,23 @@
     $_SESSION["authtoken"]=$token;
     $_SESSION["sessionid"]=$sessid;
 
+  }
+
+
+  catch (GuzzleHttp\Exception\BadResponseException $e) {
+      $response = $e->getResponse();
+      $responseBodyAsString = (string) $response->getBody();
+      $json = json_decode($responseBodyAsString);
+      $responsestatuscode = $response->getStatusCode();
+      $messages = $json->messages;
+  }
+
     headernav();
 
 
    ?>
    <center><h1>SESSION INFO</h1></center>
+   <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
              <pre><?php print_r($json); ?></pre>
              <br>

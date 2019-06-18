@@ -5,7 +5,7 @@
       headernav();
       ?>
 
-<form action="showroombydatetime.php" method="post">
+<form action="searchroombydatetimeform.php" method="post">
   <div class='form-group'>
     <center><h1>SEARCH room BY date time</h1></center>
     <input type='day' class='form-control' name='day' placeholder='Enter day'>

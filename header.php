@@ -33,7 +33,7 @@ function headernav()
             <a class="nav-item nav-link" href="http://localhost/wsc/signup.php">Sign Up</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/searchroombydatetime.php">Search ROOM by date and time</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">BIND NEW ROOM</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/logout.php">Log out</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">new course this year</a>
         </div>
     </div>
 </nav>

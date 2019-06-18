@@ -8,8 +8,8 @@
      <form action="newcourseform.php" method="post">
 
              <div class='form-group'>
-                 <label for='id'>Course ID</label>
-                 <input type='id' class='form-control' id='courseid' name='id' placeholder='Enter Course ID'>
+                 <label for='course_id'>Course ID</label>
+                 <input type='course_id' class='form-control' id='course_id' name='course_id' placeholder='Enter Course ID'>
              </div>
 
              <div class='form-group'>

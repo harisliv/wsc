@@ -17,10 +17,11 @@
 
   $client = new GuzzleHttp\Client();
 
-  $id_room = $_POST['id_room'];
-  $id_ts = $_POST['id_ts'];
-  $id_acadsem = $_POST['id_acadsem'];
+  try {
 
+  (empty($_POST['id_room'])  ? $id_room = NULL : $id_room = $_POST['id_room']);
+  (empty($_POST['id_ts'])  ? $id_ts = NULL : $id_ts = $_POST['id_ts']);
+  (empty($_POST['id_acadsem'])  ? $id_acadsem = NULL : $id_acadsem = $_POST['id_acadsem']);
 
   $res = $client->request('POST', 'http://localhost/shedulerapi/controller/room_avail.php' ,
   [
@@ -45,10 +46,20 @@
     $messages = $json->messages;
     $data = $json->data->rooms_avail;
 
+  }
+
+  catch (GuzzleHttp\Exception\BadResponseException $e) {
+      $response = $e->getResponse();
+      $responseBodyAsString = (string) $response->getBody();
+      $json = json_decode($responseBodyAsString);
+      $responsestatuscode = $response->getStatusCode();
+      $messages = $json->messages;
+  }
+
     headernav();
 
      ?>
-     <center><h1><?php echo $messages[0]; ?></h1></center>
+     <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
      <pre>ID : <?php print_r($data[0]->id); ?></pre>
      <br>

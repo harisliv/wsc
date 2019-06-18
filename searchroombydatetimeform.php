@@ -11,13 +11,17 @@
       require "vendor/autoload.php";
       use GuzzleHttp\Client;
 
-      //echo $_SESSION["authtoken"];
-
       $client = new GuzzleHttp\Client();
+
+      try {
+
+      (empty($_POST['day'])  ? $day = NULL : $day = $_POST["day"] );
+      (empty($_POST['start_time'])  ? $start_time = NULL : $start_time = $_POST["start_time"] );
+
       $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['day' => $_POST['day'], 'start_time' => $_POST['start_time']]
+      'query' => ['day' => $day, 'start_time' => $start_time]
       ]
       );
 
@@ -28,6 +32,17 @@
       $json = json_decode($string);
       $messages = $json->messages;
 
+    }
+
+
+    catch (GuzzleHttp\Exception\BadResponseException $e) {
+        $response = $e->getResponse();
+        $responseBodyAsString = (string) $response->getBody();
+        $json = json_decode($responseBodyAsString);
+        $responsestatuscode = $response->getStatusCode();
+        $messages = $json->messages;
+    }
+
 
 
       headernav();
@@ -35,7 +50,7 @@
 
        ?>
        <center><h1>SHOW ROOMS AVAILABLE AT THIS DAY AND TIME</h1></center>
-       <center><h1><?php echo $messages[0]; ?></h1></center>
+       <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
        <pre><?php   print_r($json); ?></pre>
 
