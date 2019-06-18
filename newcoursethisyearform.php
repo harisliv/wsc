@@ -15,14 +15,20 @@
   error_reporting(E_ALL);
   error_reporting(0);
 
+
+
+
   $client = new GuzzleHttp\Client();
+
+try {
 
   $id_course = $_POST['id_course'];
   $id_responsible_prof = $_POST['id_responsible_prof'];
   $id_acadsem = $_POST['id_acadsem'];
-  $count_div_theory = $_POST['count_div_theory'];
-  $count_div_lab = $_POST['count_div_lab'];
-  $count_div_practice = $_POST['count_div_practice'];
+  (empty($_POST['count_div_theory'])  ? $count_div_theory = NULL : $count_div_theory = $_POST['count_div_theory']);
+  (empty($_POST['count_div_lab'])  ? $count_div_lab = NULL : $count_div_lab = $_POST['count_div_lab']);
+  (empty($_POST['count_div_practice'])  ? $count_div_practice = NULL : $count_div_practice = $_POST['count_div_practice']);
+
 
 
   $res = $client->request('POST', 'http://localhost/shedulerapi/controller/course_this_year.php' ,
@@ -50,6 +56,17 @@
     $messages = $json->messages;
     $data = $json->data->rooms_avail;
 
+  }
+
+
+  catch (GuzzleHttp\Exception\BadResponseException $e) {
+      $response = $e->getResponse();
+      $responseBodyAsString = (string) $response->getBody();
+      $json = json_decode($responseBodyAsString);
+      $responsestatuscode = $response->getStatusCode();
+      $messages = $json->messages;
+  }
+
     headernav();
 
      ?>
@@ -59,4 +76,6 @@
      <br>
      <pre><?php   print_r($json); ?></pre>
 
-     <?php footernav(); ?>
+     <?php footernav();
+
+     ?>

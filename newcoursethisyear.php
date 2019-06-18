@@ -8,6 +8,7 @@
 
     require "vendor/autoload.php";
     use GuzzleHttp\Client;
+    use GuzzleHttp\Exception\ClientException;
 
     //echo $_SESSION["authtoken"];
 
