@@ -17,11 +17,12 @@
 
       (empty($_POST['day'])  ? $day = NULL : $day = $_POST["day"] );
       (empty($_POST['start_time'])  ? $start_time = NULL : $start_time = $_POST["start_time"] );
+      (empty($_POST['room_code'])  ? $room_code = NULL : $room_code = $_POST["room_code"] );
 
       $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['day' => $day, 'start_time' => $start_time]
+      'query' => ['day' => $day, 'start_time' => $start_time, 'room_code' => $room_code],
       ]
       );
 
