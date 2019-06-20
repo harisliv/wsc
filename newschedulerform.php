@@ -68,6 +68,23 @@
     $json1 = json_decode($response1);
     $messages1 = $json1->messages;
 
+
+
+
+    $client2 = new GuzzleHttp\Client();
+    $res2 = $client2->request('PATCH', 'http://localhost/shedulerapi/controller/room_avail.php',
+    [
+      'headers' => ['Authorization' => $_SESSION["authtoken"]],
+      'query' => ['id' => $id_room_avail],
+      'json' =>  ['available' => 'N']
+    ]
+    );
+
+
+    $response2 = (string) $res2->getBody();
+    $json2 = json_decode($response2);
+    $messages2 = $json2->messages;
+
   }
 
   catch (GuzzleHttp\Exception\BadResponseException $e) {
@@ -84,6 +101,14 @@
       $json1 = json_decode($responseBodyAsString1);
       $responsestatuscode1 = $response1->getStatusCode();
       $messages = $json1->messages;
+  }
+
+  catch (GuzzleHttp\Exception\BadResponseException $e) {
+      $response2 = $e->getResponse();
+      $responseBodyAsString2 = (string) $response2->getBody();
+      $json2 = json_decode($responseBodyAsString2);
+      $responsestatuscode2 = $response2->getStatusCode();
+      $messages = $json2->messages;
   }
 
     headernav();

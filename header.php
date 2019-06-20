@@ -34,6 +34,7 @@ function headernav()
             <a class="nav-item nav-link" href="http://localhost/wsc/searchroombydatetime.php">Search ROOM by date and time</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">BIND NEW ROOM</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">new course this year</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/newscheduler.php">new scheduler</a>
         </div>
     </div>
 </nav>

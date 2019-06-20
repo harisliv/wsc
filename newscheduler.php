@@ -61,29 +61,29 @@
       //echo "<br> json3 time slot day: " . $timeslot_array[$x]->data->timeslots[0]->day . "<br>";
       //print_r($json3);
 
-  }
+      }
 
-  $client4 = new GuzzleHttp\Client();
-  $res4 = $client4->request('GET', 'http://localhost/shedulerapi/controller/course.php',
-  [
-  'headers' => ['Authorization' => $_SESSION["authtoken"]]
-  ]
-  );
+      $client4 = new GuzzleHttp\Client();
+      $res4 = $client4->request('GET', 'http://localhost/shedulerapi/controller/course.php',
+      [
+      'headers' => ['Authorization' => $_SESSION["authtoken"]]
+      ]
+      );
 
-  $body4 = $res4->getBody();
-  $string4 = $body4->getContents();
-  $json4 = json_decode($string4);
+      $body4 = $res4->getBody();
+      $string4 = $body4->getContents();
+      $json4 = json_decode($string4);
 
-  $client5 = new GuzzleHttp\Client();
-  $res5 = $client5->request('GET', 'http://localhost/shedulerapi/controller/professor.php',
-  [
-  'headers' => ['Authorization' => $_SESSION["authtoken"]]
-  ]
-  );
+      $client5 = new GuzzleHttp\Client();
+      $res5 = $client5->request('GET', 'http://localhost/shedulerapi/controller/professor.php',
+      [
+      'headers' => ['Authorization' => $_SESSION["authtoken"]]
+      ]
+      );
 
-  $body5 = $res5->getBody();
-  $string5 = $body5->getContents();
-  $json5 = json_decode($string5);
+      $body5 = $res5->getBody();
+      $string5 = $body5->getContents();
+      $json5 = json_decode($string5);
 
   headernav();
 
