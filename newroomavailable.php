@@ -31,11 +31,10 @@
     ]
     );
 
-
-
     $body2 = $res2->getBody();
     $string2 = $body2->getContents();
     $json2 = json_decode($string2);
+
 
     $client3 = new GuzzleHttp\Client();
     $res3 = $client3->request('GET', 'http://localhost/shedulerapi/controller/acad_sem.php',
@@ -43,8 +42,6 @@
     'headers' => ['Authorization' => $_SESSION["authtoken"]]
     ]
     );
-
-
 
     $body3 = $res3->getBody();
     $string3 = $body3->getContents();
@@ -71,7 +68,7 @@
                  </div>
 
                <div class='form-group'>
-                   <label>id_ts</label>
+                   <label>Time and Day</label>
                    <select name='id_ts'>
                      <?php for ($x = 0; $x <= $json2->data->rows_returned; $x++) { ?>
                      <option value="<?php print_r($json2->data->timeslots[$x]->id); ?>">
@@ -82,7 +79,7 @@
                  </div>
 
                <div class='form-group'>
-                   <label>id_acadsem</label>
+                   <label>acadsem</label>
                    <select name='id_acadsem'>
                      <?php for ($x = 0; $x <= $json3->data->rows_returned; $x++) { ?>
                      <option value="<?php print_r($json3->data->acadsems[$x]->id); ?>">

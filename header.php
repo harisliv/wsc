@@ -1,7 +1,14 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+error_reporting(0);
+
+
 function headernav()
 {
+
   ?>
 <!DOCTYPE html>
 <head>
@@ -13,6 +20,7 @@ function headernav()
       body { padding-top: 5rem; }
       .starter-template { padding: 3rem 1.5rem; }
       #logout{ display:none; }
+
   </style>
 
 </head>
@@ -27,14 +35,14 @@ function headernav()
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
+          <?php  if(isset($_SESSION["authtoken"]) && isset($_SESSION["id_acadsem"])){ ?>
             <a class="nav-item nav-link" href="http://localhost/wsc/searchcoursebyid.php">Search Course by ID</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/showallcourses.php">Show All Courses</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newcourse.php">Create New Course</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/signup.php">Sign Up</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/searchroombydatetime.php">Search ROOM by date and time</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">BIND NEW ROOM</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">new course this year</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newscheduler.php">new scheduler</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">New Room availability</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">New course this year</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/newscheduler.php">Scheduler</a>
+
+            <?php  }?>
         </div>
     </div>
 </nav>
