@@ -5,7 +5,6 @@
      session_unset();
     unset($_SESSION['id_acadsem']);
     unset($_SESSION['authtoken']);
-    echo "spera " . $_SESSION['id_acadsem'];
 
   ?>
   <!-- /navbar -->
