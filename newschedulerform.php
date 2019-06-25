@@ -23,7 +23,7 @@
   (empty($_POST['id_course'])  ? $id_course = NULL : $id_course = $_POST['id_course']);
   (empty($_POST['type_division'])  ? $type_division = NULL : $type_division = $_POST['type_division']);
   (empty($_POST['id_prof'])  ? $id_prof = NULL : $id_prof = $_POST['id_prof']);
-  echo $id_prof;
+  //echo $id_prof;
   $client = new GuzzleHttp\Client();
   $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
   [
@@ -52,13 +52,13 @@
       'json' =>
         [
           'id_course' => $id_course,
-          'id_acadsem' => 1,
+          'id_acadsem' => $_SESSION["id_acadsem"],
           'type_division' => $type_division,
-          'lektiko_division' => "skerou",
+          'lektiko_division' => "tha doume pws",
           'id_prof' => $id_prof,
           'id_room' => $data[0]->id_room,
           'id_ts' => $data[0]->id_ts,
-          'division_str' => "elasbousai"
+          'division_str' => "ab12"
         ]
     ]
     );
@@ -95,28 +95,12 @@
       $messages = $json->messages;
   }
 
-  catch (GuzzleHttp\Exception\BadResponseException $e) {
-      $response1 = $e->getResponse();
-      $responseBodyAsString1 = (string) $response1->getBody();
-      $json1 = json_decode($responseBodyAsString1);
-      $responsestatuscode1 = $response1->getStatusCode();
-      $messages = $json1->messages;
-  }
-
-  catch (GuzzleHttp\Exception\BadResponseException $e) {
-      $response2 = $e->getResponse();
-      $responseBodyAsString2 = (string) $response2->getBody();
-      $json2 = json_decode($responseBodyAsString2);
-      $responsestatuscode2 = $response2->getStatusCode();
-      $messages = $json2->messages;
-  }
-
     headernav();
 
      ?>
      <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
-     <pre>ID : <?php print_r($data1[0]->id); ?></pre>
+     <pre> <?php //print_r($data1[0]->id); ?></pre>
      <br>
      <pre><?php   print_r($json1); ?></pre>
 

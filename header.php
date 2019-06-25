@@ -20,6 +20,8 @@ function headernav()
       body { padding-top: 5rem; }
       .starter-template { padding: 3rem 1.5rem; }
       #logout{ display:none; }
+      .now {color : red!important;}
+      .now:hover {color:cyan!important;}
 
   </style>
 
@@ -41,7 +43,7 @@ function headernav()
             <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">New Room availability</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">New course this year</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newscheduler.php">Scheduler</a>
-
+            <a class="nav-item nav-link now" href="http://localhost/wsc/loginform.php"><?php echo $_SESSION["lektiko_acadsem"]; ?></a>
             <?php  }?>
         </div>
     </div>

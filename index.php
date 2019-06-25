@@ -1,6 +1,13 @@
   <?php include "header.php"; ?>
   <?php include "footer.php"; ?>
-  <?php headernav(); ?>
+  <?php headernav();
+  session_start();
+     session_unset();
+    unset($_SESSION['id_acadsem']);
+    unset($_SESSION['authtoken']);
+    echo "spera " . $_SESSION['id_acadsem'];
+
+  ?>
   <!-- /navbar -->
 
   <!-- content section will be here -->

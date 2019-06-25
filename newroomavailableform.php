@@ -21,7 +21,6 @@
 
   (empty($_POST['id_room'])  ? $id_room = NULL : $id_room = $_POST['id_room']);
   (empty($_POST['id_ts'])  ? $id_ts = NULL : $id_ts = $_POST['id_ts']);
-  (empty($_POST['id_acadsem'])  ? $id_acadsem = NULL : $id_acadsem = $_POST['id_acadsem']);
 
   $res = $client->request('POST', 'http://localhost/shedulerapi/controller/room_avail.php' ,
   [
@@ -34,7 +33,7 @@
             [
         'id_room' => $id_room,
         'id_ts' => $id_ts,
-        'id_acadsem' => $id_acadsem,
+        'id_acadsem' => $_SESSION["id_acadsem"],
         'available' => "Y"
             ]
   ]

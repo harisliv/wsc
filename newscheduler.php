@@ -6,6 +6,9 @@
       error_reporting(E_ALL);
       error_reporting(0);
 
+      $weekdb = array("de", "tr", "te", "pe", "pa");
+      $weekgk = array("Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή");
+
       require "vendor/autoload.php";
       use GuzzleHttp\Client;
 
@@ -15,7 +18,9 @@
       $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['available' => 'Y']
+      'query' => ['id_acadsem' => $_SESSION["id_acadsem"],
+                  'available' => 'Y'
+                 ]
       ]
       );
 
@@ -89,7 +94,7 @@
 
         ?>
 
-    <center><h1>SIGN UP</h1></center>
+    <center><h1>Sheduler</h1></center>
 
        <form action="newschedulerform.php" method="post">
 
@@ -100,13 +105,13 @@
                <option value="<?php print_r($json->data->rooms_avail[$x]->id); ?>">
                  <?php
                       //print_r($json->data->rooms_avail[$x]->id);
-                      echo " Lektiko Room: ";
                       print_r($room_array[$x]->data->rooms[0]->lektiko_room);
                       echo " Start Time: ";
                       print_r($timeslot_array[$x]->data->timeslots[0]->start_time);
-                      echo " Day: ";
-                      print_r($timeslot_array[$x]->data->timeslots[0]->day);
-                      echo "  ";
+                      for ($y = 0; $y <= 4; $y++) {
+                      if($weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day){
+                        echo ":00 " . str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
+                      }}
                        ?>
                </option>
              <?php } ?>
@@ -114,7 +119,7 @@
            </div>
 
            <div class='form-group'>
-               <label>id_course</label>
+               <label>Course</label>
                <select name='id_course'>
                  <?php for ($x = 0; $x < $json4->data->rows_returned; $x++) { ?>
                  <option value="<?php print_r($json4->data->courses[$x]->id); ?>">
@@ -130,7 +135,7 @@
              <br>
 
              <div class='form-group'>
-                 <label>id_prof</label>
+                 <label>Καθηγητής</label>
                  <select name='id_prof'>
                    <?php for ($x = 0; $x < $json5->data->rows_returned; $x++) { ?>
                    <option value="<?php print_r($json5->data->professors[$x]->id); ?>">

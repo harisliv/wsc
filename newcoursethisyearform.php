@@ -24,7 +24,7 @@ try {
 
   $id_course = $_POST['id_course'];
   $id_responsible_prof = $_POST['id_responsible_prof'];
-  $id_acadsem = $_POST['id_acadsem'];
+  //$id_acadsem = $_POST['id_acadsem'];
   (empty($_POST['count_div_theory'])  ? $count_div_theory = NULL : $count_div_theory = $_POST['count_div_theory']);
   (empty($_POST['count_div_lab'])  ? $count_div_lab = NULL : $count_div_lab = $_POST['count_div_lab']);
   (empty($_POST['count_div_practice'])  ? $count_div_practice = NULL : $count_div_practice = $_POST['count_div_practice']);
@@ -42,7 +42,7 @@ try {
             [
         'id_course' => $id_course,
         'id_responsible_prof' => $id_responsible_prof,
-        'id_acadsem' => $id_acadsem,
+        'id_acadsem' => $_SESSION["id_acadsem"],
         'count_div_theory' => $count_div_theory,
         'count_div_lab' => $count_div_lab,
         'count_div_practice' => $count_div_practice
