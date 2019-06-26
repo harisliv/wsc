@@ -95,6 +95,60 @@
         ?>
 
     <center><h1>Sheduler</h1></center>
+        <table class="flat-table flat-table-1">
+        	<thead>
+        		<th>ID</th>
+        		<th>ROOM</th>
+        		<th>START TIME</th>
+        		<th>DAY</th>
+        	</thead>
+        	<tbody>
+            <?php for ($x = 0; $x < $json->data->rows_returned; $x++) { ?>
+        		<tr>
+              <td><?php echo $room_array[$x]->data->rooms[0]->id; ?></td>
+              <td><?php echo $room_array[$x]->data->rooms[0]->lektiko_room; ?></td>
+              <td><?php echo $timeslot_array[$x]->data->timeslots[0]->start_time . ":00"; ?></td>
+              <td><?php for ($y = 0; $y <= 4; $y++) {
+              if($weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day){
+                echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
+              }}?></td>
+
+        		</tr>
+          <?php } ?>
+
+        	</tbody>
+        </table>
+
+
+        <table class="flat-table flat-table-1 table table-bordered">
+          <thead>
+            <th> </th>
+             <?php for ($y = 0; $y <= 4; $y++) { ?>
+            <th>
+              <?php echo $weekdb[$y]; ?>
+            </th>
+            <?php } ?>
+          </thead>
+          <tbody>
+
+            <?php for ($st = 8; $st < 11; $st++) { ?>
+            <tr>
+              <td><?php echo $st; ?></td>
+              <?php for ($y = 0; $y <= 4; $y++) { ?>
+              <td><?php for ($x = 0; $x < $json->data->rows_returned; $x++) {
+                if($timeslot_array[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day) {
+                  echo $timeslot_array[$x]->data->timeslots[0]->start_time . ":00";
+                  echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
+                }
+              }
+              ?>
+              </td>
+              <?php } ?>
+            </tr>
+          <?php } ?>
+
+          </tbody>
+        </table>
 
        <form action="newschedulerform.php" method="post">
 
