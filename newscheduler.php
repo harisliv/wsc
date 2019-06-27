@@ -105,7 +105,7 @@
         	<tbody>
             <?php for ($x = 0; $x < $json->data->rows_returned; $x++) { ?>
         		<tr>
-              <td><?php echo $room_array[$x]->data->rooms[0]->id; ?></td>
+              <td><?php echo $json->data->rooms_avail[$x]->id; ?></td>
               <td><?php echo $room_array[$x]->data->rooms[0]->lektiko_room; ?></td>
               <td><?php echo $timeslot_array[$x]->data->timeslots[0]->start_time . ":00"; ?></td>
               <td><?php for ($y = 0; $y <= 4; $y++) {
@@ -119,6 +119,7 @@
         	</tbody>
         </table>
 
+        <form action="newschedulerform.php" method="post">
 
         <table class="flat-table flat-table-1 table table-bordered">
           <thead>
@@ -137,8 +138,13 @@
               <?php for ($y = 0; $y <= 4; $y++) { ?>
               <td><?php for ($x = 0; $x < $json->data->rows_returned; $x++) {
                 if($timeslot_array[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day) {
-                  echo $timeslot_array[$x]->data->timeslots[0]->start_time . ":00";
-                  echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
+                  //echo $timeslot_array[$x]->data->timeslots[0]->start_time . ":00";
+                  //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
+                  ?><div class="form-check">
+                  <input class="form-check-input" type="radio" name="testtableradio[<?php echo $x;?>]" value="<?php echo $json->data->rooms_avail[$x]->id; ?>" >
+                  <?php echo $room_array[$x]->data->rooms[0]->lektiko_room; ?>
+                </div>
+                  <?php
                 }
               }
               ?>
@@ -149,28 +155,6 @@
 
           </tbody>
         </table>
-
-       <form action="newschedulerform.php" method="post">
-
-         <div class='form-group'>
-             <label>Rooms available: </label>
-             <select name='id_room_avail'>
-               <?php for ($x = 0; $x < $json->data->rows_returned; $x++) { ?>
-               <option value="<?php print_r($json->data->rooms_avail[$x]->id); ?>">
-                 <?php
-                      //print_r($json->data->rooms_avail[$x]->id);
-                      print_r($room_array[$x]->data->rooms[0]->lektiko_room);
-                      echo " Start Time: ";
-                      print_r($timeslot_array[$x]->data->timeslots[0]->start_time);
-                      for ($y = 0; $y <= 4; $y++) {
-                      if($weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day){
-                        echo ":00 " . str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
-                      }}
-                       ?>
-               </option>
-             <?php } ?>
-             </select>
-           </div>
 
            <div class='form-group'>
                <label>Course</label>

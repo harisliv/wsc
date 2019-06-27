@@ -14,10 +14,16 @@
   ini_set('display_startup_errors', 1);
   error_reporting(E_ALL);
   error_reporting(0);
+  headernav();
 
   $client = new GuzzleHttp\Client();
 
   try {
+    //echo "testtableradio: " . $_POST['testtableradio'];
+
+ foreach($_POST['testtableradio'] as $option_num => $option_val){
+    echo $option_num." ".$option_val."<br>";
+
 
   (empty($_POST['id_room_avail'])  ? $id_room_avail = NULL : $id_room_avail = $_POST['id_room_avail']);
   (empty($_POST['id_course'])  ? $id_course = NULL : $id_course = $_POST['id_course']);
@@ -28,7 +34,7 @@
   $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
   [
   'headers' => ['Authorization' => $_SESSION["authtoken"]],
-  'query' => ['id' => $id_room_avail]
+  'query' => ['id' => $option_val]
   ]
   );
 
@@ -75,7 +81,7 @@
     $res2 = $client2->request('PATCH', 'http://localhost/shedulerapi/controller/room_avail.php',
     [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['id' => $id_room_avail],
+      'query' => ['id' => $option_val],
       'json' =>  ['available' => 'N']
     ]
     );
@@ -83,9 +89,11 @@
 
     $response2 = (string) $res2->getBody();
     $json2 = json_decode($response2);
-    $messages2 = $json2->messages;
-
+    $messages2 = $json2->messages;?>
+    <pre><?php   print_r($json1); ?></pre>
+<?php
   }
+}
 
   catch (GuzzleHttp\Exception\BadResponseException $e) {
       $response = $e->getResponse();
@@ -95,13 +103,11 @@
       $messages = $json->messages;
   }
 
-    headernav();
 
      ?>
      <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
      <pre> <?php //print_r($data1[0]->id); ?></pre>
      <br>
-     <pre><?php   print_r($json1); ?></pre>
 
      <?php footernav(); ?>

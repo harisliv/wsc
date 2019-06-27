@@ -2,3 +2,22 @@ else { ?>
   <input type="radio" name="gender" value="<?php echo $room_array[$x]->data->rooms[0]->id; ?>" >Male
 
 <?php } ?>
+
+
+<label>Rooms available: </label>
+<select name='id_room_avail'>
+  <?php for ($x = 0; $x < $json->data->rows_returned; $x++) { ?>
+  <option value="<?php print_r($json->data->rooms_avail[$x]->id); ?>">
+    <?php
+         //print_r($json->data->rooms_avail[$x]->id);
+         print_r($room_array[$x]->data->rooms[0]->lektiko_room);
+         echo " Start Time: ";
+         print_r($timeslot_array[$x]->data->timeslots[0]->start_time);
+         for ($y = 0; $y <= 4; $y++) {
+         if($weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day){
+           echo ":00 " . str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
+         }}
+          ?>
+  </option>
+<?php } ?>
+</select>
