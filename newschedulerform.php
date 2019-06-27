@@ -74,8 +74,24 @@
     $json1 = json_decode($response1);
     $messages1 = $json1->messages;
 
+    if($type_division === "theory"){
 
 
+      $client2 = new GuzzleHttp\Client();
+      $res2 = $client2->request('PATCH', 'http://localhost/shedulerapi/controller/room_avail.php',
+      [
+        'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' => ['id_ts' => $data[0]->id_ts],
+        'json' =>  ['available' => 'N']
+      ]
+      );
+
+
+      $response2 = (string) $res2->getBody();
+      $json2 = json_decode($response2);
+      $messages2 = $json2->messages;
+    }
+    else{
 
     $client2 = new GuzzleHttp\Client();
     $res2 = $client2->request('PATCH', 'http://localhost/shedulerapi/controller/room_avail.php',
@@ -89,7 +105,10 @@
 
     $response2 = (string) $res2->getBody();
     $json2 = json_decode($response2);
-    $messages2 = $json2->messages;?>
+    $messages2 = $json2->messages;
+  }
+
+  ?>
     <pre><?php   print_r($json1); ?></pre>
 <?php
   }

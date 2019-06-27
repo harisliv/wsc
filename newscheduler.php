@@ -126,7 +126,7 @@
             <th> </th>
              <?php for ($y = 0; $y <= 4; $y++) { ?>
             <th>
-              <?php echo $weekdb[$y]; ?>
+              <?php echo $weekgk[$y]; ?>
             </th>
             <?php } ?>
           </thead>
