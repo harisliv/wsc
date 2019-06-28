@@ -6,6 +6,8 @@
       error_reporting(E_ALL);
       error_reporting(0);
 
+      headernav();
+
       $weekdb = array("de", "tr", "te", "pe", "pa");
       $weekgk = array("Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή");
 
@@ -13,8 +15,10 @@
       use GuzzleHttp\Client;
 
       //echo $_SESSION["authtoken"];
+      try {
 
       $client = new GuzzleHttp\Client();
+
       $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
@@ -29,47 +33,7 @@
       $json = json_decode($string);
       $data = $json->data->rooms_avail;
 
-
-
-      for ($x = 0; $x < $json->data->rows_returned; $x++) {
-      $client2 = new GuzzleHttp\Client();
-      $res2 = $client2->request('GET', 'http://localhost/shedulerapi/controller/room.php',
-      [
-      'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['id' => $data[$x]->id_room ]
-      ]
-      );
-      //echo "<br> Room ID: " . $data[$x]->id_room;
-      $body2 = $res2->getBody();
-      $string2 = $body2->getContents();
-      $json2 = json_decode($string2);
-      $room_array[$x] = $json2;
-      //echo "<br> json2 room code: " . $room_array[$x]->data->rooms[0]->room_code . "<br>";
-      //print_r($json2);
-
-
-      $client3 = new GuzzleHttp\Client();
-      $res3 = $client3->request('GET', 'http://localhost/shedulerapi/controller/timeslot.php',
-      [
-      'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['id' => $data[$x]->id_ts ]
-      ]
-      );
-      //echo "<br> TIME SLOT ID: " . $data[$x]->id_ts;
-
-
-      $body3 = $res3->getBody();
-      $string3 = $body3->getContents();
-      $json3 = json_decode($string3);
-      $timeslot_array[$x] = $json3;
-      //echo "<br> json3 time slot start time: " . $timeslot_array[$x]->data->timeslots[0]->start_time . "<br>";
-      //echo "<br> json3 time slot day: " . $timeslot_array[$x]->data->timeslots[0]->day . "<br>";
-      //print_r($json3);
-
-      }
-
-      $client4 = new GuzzleHttp\Client();
-      $res4 = $client4->request('GET', 'http://localhost/shedulerapi/controller/course.php',
+      $res4 = $client->request('GET', 'http://localhost/shedulerapi/controller/course.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]]
       ]
@@ -79,8 +43,7 @@
       $string4 = $body4->getContents();
       $json4 = json_decode($string4);
 
-      $client5 = new GuzzleHttp\Client();
-      $res5 = $client5->request('GET', 'http://localhost/shedulerapi/controller/professor.php',
+      $res5 = $client->request('GET', 'http://localhost/shedulerapi/controller/professor.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]]
       ]
@@ -90,7 +53,34 @@
       $string5 = $body5->getContents();
       $json5 = json_decode($string5);
 
-  headernav();
+      for ($x = 0; $x < $json->data->rows_returned; $x++) {
+        $res2 = $client->request('GET', 'http://localhost/shedulerapi/controller/room.php',
+        [
+        'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' => ['id' => $data[$x]->id_room ]
+        ]
+        );
+
+        $body2 = $res2->getBody();
+        $string2 = $body2->getContents();
+        $json2 = json_decode($string2);
+        $room_array[$x] = $json2;
+
+        $res3 = $client->request('GET', 'http://localhost/shedulerapi/controller/timeslot.php',
+        [
+        'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' => ['id' => $data[$x]->id_ts ]
+        ]
+        );
+
+        $body3 = $res3->getBody();
+        $string3 = $body3->getContents();
+        $json3 = json_decode($string3);
+        $timeslot_array[$x] = $json3;
+        //echo "<br> Room ID: " . $data[$x]->id_room;
+        //echo "<br> json2 room code: " . $room_array[$x]->data->rooms[0]->room_code . "<br>";
+        //print_r($json2);
+      }
 
         ?>
 
@@ -188,5 +178,15 @@
 
 
             </form>
+            <?php
+}
 
-    <?php footernav(); ?>
+catch (GuzzleHttp\Exception\BadResponseException $e) {
+    $response = $e->getResponse();
+    $responseBodyAsString = (string) $response->getBody();
+    $json = json_decode($responseBodyAsString);
+    $responsestatuscode = $response->getStatusCode();
+    $messages = $json->messages;
+}
+
+    footernav(); ?>
