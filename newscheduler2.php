@@ -18,8 +18,7 @@
       $res = $client->request('GET', 'http://localhost/shedulerapi/controller/scheduler.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['id_acadsem' => $_SESSION["id_acadsem"],
-                  'available' => 'Y'
+      'query' => ['id_acadsem' => $_SESSION["id_acadsem"]
                  ]
       ]
       );
@@ -32,8 +31,7 @@
 
 
       for ($x = 0; $x < $json->data->rows_returned; $x++) {
-      $client2 = new GuzzleHttp\Client();
-      $res2 = $client2->request('GET', 'http://localhost/shedulerapi/controller/room.php',
+      $res2 = $client->request('GET', 'http://localhost/shedulerapi/controller/room.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
       'query' => ['id' => $data[$x]->id_room ]
@@ -48,8 +46,7 @@
       //print_r($json2);
 
 
-      $client3 = new GuzzleHttp\Client();
-      $res3 = $client3->request('GET', 'http://localhost/shedulerapi/controller/timeslot.php',
+      $res3 = $client->request('GET', 'http://localhost/shedulerapi/controller/timeslot.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
       'query' => ['id' => $data[$x]->id_ts ]
@@ -68,8 +65,7 @@
       //echo "<br> json3 time slot day: " . $timeslot_array[$x]->data->timeslots[0]->day . "<br>";
       //print_r($json3);
 
-      $client4 = new GuzzleHttp\Client();
-      $res4 = $client4->request('GET', 'http://localhost/shedulerapi/controller/course.php',
+      $res4 = $client->request('GET', 'http://localhost/shedulerapi/controller/course.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
       'query' => ['id' => $data[$x]->id_course]
@@ -88,8 +84,7 @@
 
 
 
-      $client5 = new GuzzleHttp\Client();
-      $res5 = $client5->request('GET', 'http://localhost/shedulerapi/controller/professor.php',
+      $res5 = $client->request('GET', 'http://localhost/shedulerapi/controller/professor.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]]
       ]
@@ -130,7 +125,6 @@
         	</tbody>
         </table>
 
-        <form action="newschedulerform.php" method="post">
 
         <table class="flat-table flat-table-1 table table-bordered">
           <thead>
@@ -168,37 +162,6 @@
           </tbody>
         </table>
 
-           <div class='form-group'>
-               <label>Course</label>
-               <select name='id_course'>
-                 <?php for ($x = 0; $x < $json4->data->rows_returned; $x++) { ?>
-                 <option value="<?php print_r($json4->data->courses[$x]->id); ?>">
-                   <?php print_r($json4->data->courses[$x]->name); ?>
-                 </option>
-               <?php } ?>
-               </select>
-             </div>
 
-             <input type="radio" name="type_division" value="lab">lab
-             <input type="radio" name="type_division" value="theory">theory
-             <input type="radio" name="type_division" value="practice">practice
-             <br>
-
-             <div class='form-group'>
-                 <label>Καθηγητής</label>
-                 <select name='id_prof'>
-                   <?php for ($x = 0; $x < $json5->data->rows_returned; $x++) { ?>
-                   <option value="<?php print_r($json5->data->professors[$x]->id); ?>">
-                     <?php print_r($json5->data->professors[$x]->fullname); ?>
-                   </option>
-                 <?php } ?>
-                 </select>
-               </div>
-
-
-             <br><input type="submit" value="Submit">
-
-
-            </form>
 
     <?php footernav(); ?>
