@@ -22,7 +22,7 @@ function headernav()
       .now {color : red!important;}
       .now:hover {color:cyan!important;}
 
-      
+
       .flat-table {
 		margin-bottom: 20px;
 		border-collapse:collapse;
@@ -93,7 +93,7 @@ function headernav()
             <a class="nav-item nav-link" href="http://localhost/wsc/showallcourses.php">Show All Courses</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">New Room availability</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">New course this year</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newscheduler.php">Scheduler</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/newscheduleraio.php">Scheduler</a>
             <a class="nav-item nav-link now" href="http://localhost/wsc/loginform.php"><?php echo $_SESSION["lektiko_acadsem"]; ?></a>
             <?php  }?>
         </div>

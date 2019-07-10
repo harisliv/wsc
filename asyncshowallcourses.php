@@ -21,14 +21,15 @@
 
       $client = new GuzzleHttp\Client;
 
-      $promise = $client->requestAsync('GET','http://localhost/shedulerapi/controller/course.php');
+      //$promise = $client->getAsync('http://localhost/shedulerapi/controller/course.php',['headers' => ['Authorization' => $_SESSION["authtoken"]] , 'query' => ['id' => 1]]);
+      $promise = $client->postAsync('http://httpbin.org/post');
 
       $promise->then(
         function (ResponseInterface $res) {
             echo "kif" . $res->getStatusCode() . "\n";
-            $body = $res->getBody();
-            $string = $body->getContents();
-            $json = json_decode($string);
+            $json = json_decode((string)$res->getBody());
+            print_r($json);
+
         },
         function (RequestException $e) {
             echo $e->getMessage() . "\n";
@@ -36,9 +37,11 @@
         }
 );
 
+// Force the pool of requests to complete
+$promise->wait();
 
        ?>
        <center><h1>SHOW ALL COURSES</h1></center>
-       <pre><?php   //print_r($json); ?></pre>
+       <pre><?php   print_r($json); ?></pre>
 
        <?php footernav(); ?>

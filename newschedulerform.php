@@ -29,6 +29,7 @@
   (empty($_POST['id_course'])  ? $id_course = NULL : $id_course = $_POST['id_course']);
   (empty($_POST['type_division'])  ? $type_division = NULL : $type_division = $_POST['type_division']);
   (empty($_POST['id_prof'])  ? $id_prof = NULL : $id_prof = $_POST['id_prof']);
+  (empty($_POST['division_str'])  ? $division_str = NULL : $division_str = $_POST['division_str']);
   //echo $id_prof;
   $client = new GuzzleHttp\Client();
   $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
@@ -64,7 +65,7 @@
           'id_prof' => $id_prof,
           'id_room' => $data[0]->id_room,
           'id_ts' => $data[0]->id_ts,
-          'division_str' => "ab12"
+          'division_str' => $division_str
         ]
     ]
     );

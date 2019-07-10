@@ -5,7 +5,7 @@
       ini_set('display_errors', 1);
       ini_set('display_startup_errors', 1);
       error_reporting(E_ALL);
-      error_reporting(0);
+      //error_reporting(0);
       require "vendor/autoload.php";
 
       use Psr\Http\Message\ResponseInterface;
@@ -20,19 +20,21 @@
     *  to asynchronous concurrent requests in Guzzle,
     *  so you can identify which response is from which request!
     */
-    $client = new GuzzleHttp\Client(['base_uri' => 'http://httpbin.org']);
-  $requestGenerator = function($searchTerms) use ($client) {
-  	foreach($searchTerms as $searchTerm) {
+    $client = new GuzzleHttp\Client(['base_uri' => 'http://localhost/shedulerapi/controller/']);
+  $requestGenerator = function($total) use ($client) {
+    for ($i = 0; $i < $total; $i++) {
   		// The magic happens here, with yield key => value
-  		yield $searchTerm => function() use ($client, $searchTerm) {
+  		yield $total => function() use ($client, $total) {
   			// Our identifier does not have to be included in the request URI or headers
-  			return $client->getAsync('/get?q='.$searchTerm, ['headers' => ['X-Search-Term' => $searchTerm]]);
+  			return $client->getAsync('course.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]]]);
   		};
   	}
   };
-  $searchTerms = ['apple','banana','pear','orange','melon','grape','raisin'];
-  $pool = new GuzzleHttp\Pool($client, $requestGenerator($searchTerms), [
-  	'concurrency' => 3,
+
+  $total = 7;
+
+  $pool = new GuzzleHttp\Pool($client, $total, [
+  	'concurrency' => 7,
   	'fulfilled' => function(GuzzleHttp\Psr7\Response $response, $index) {
   		// This callback is delivered each successful response
   		// $index will be our special identifier we set when generating the request

@@ -22,7 +22,9 @@
 
       $client = new GuzzleHttp\Client(['base_uri' => 'http://localhost/shedulerapi/controller/']);
       $header = ['headers' => ['Authorization' => $_SESSION["authtoken"]]];
-      $room_avail_header = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'available' => 'Y']];
+      $header_authtoken = ['Authorization' => $_SESSION["authtoken"]];
+
+      $room_avail_header = ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'available' => 'Y']];
       // Initiate each request but do not block
       $promises = [
           'course' => $client->getAsync('course.php', $header),
@@ -78,13 +80,13 @@
       //print_r($scheduler_array);
       //echo $scheduler_rows;
 
-      $room_header_1 = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id' => $room_avail_array[$x]->id_room ]];
-      $timeslot_header_1 = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' =>['id'=>$room_avail_array[$x]->id_ts ]];
+      $room_header_1 = ['headers' => $header_authtoken,'query' => ['id' => $room_avail_array[$x]->id_room ]];
+      $timeslot_header_1 = ['headers' => $header_authtoken,'query' =>['id'=>$room_avail_array[$x]->id_ts ]];
 
       for ($x = 0; $x < $room_avail_rows; $x++) {
         $promises = [
-            'room_1'   => $client->getAsync('room.php', $room_header_1),
-            'timeslot_1'  => $client->getAsync('timeslot.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' =>['id'=>$room_avail_array[$x]->id_ts ]])
+            'room_1'   => $client->getAsync('room.php', ['headers' => $header_authtoken,'query' => ['id' => $room_avail_array[$x]->id_room ]]),
+            'timeslot_1'  => $client->getAsync('timeslot.php', ['headers' => $header_authtoken  ,'query' =>['id'=>$room_avail_array[$x]->id_ts ]])
         ];
 
         $results = Promise\unwrap($promises);
@@ -108,17 +110,17 @@
 
       //echo "<br>ts " . $timeslot_array->data->timeslots[2]->start_time;
 
-      $room_header_2 = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id' => $scheduler_array[$x]->id_room ]];
-      $timeslot_header_2 = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' =>['id' => $scheduler_array[$x]->id_ts]];
-      $course_header = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id' => $scheduler_array[$x]->id_course]];
+      $room_header_2 = ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_room ]];
+      $timeslot_header_2 = ['headers' => $header_authtoken,'query' =>['id' => $scheduler_array[$x]->id_ts]];
+      $course_header = ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_course]];
       //print_r($room_header_2);
 
 
       for ($x = 0; $x < $scheduler_rows; $x++) {
         $promises = [
-            'room_2'   => $client->getAsync('room.php', $room_header_2),
-            'timeslot_2'  => $client->getAsync('timeslot.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' =>['id'=>$scheduler_array[$x]->id_ts ]]),
-            'course_2'  => $client->getAsync('course.php', $course_header)
+            'room_2'   => $client->getAsync('room.php', ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_room ]]),
+            'timeslot_2'  => $client->getAsync('timeslot.php', ['headers' => $header_authtoken,'query' =>['id'=>$scheduler_array[$x]->id_ts ]]),
+            'course_2'  => $client->getAsync('course.php', ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_course]])
         ];
 
         $results = Promise\unwrap($promises);
@@ -205,6 +207,7 @@
 
         </tbody>
       </table>
+      <?php if($room_avail_rows > 0) {?>
 
          <div class='form-group'>
              <label>Course</label>
@@ -233,9 +236,13 @@
                </select>
              </div>
 
+             Division
+             <input type="text" name="division_str"><br>
+
+
 
            <br><input type="submit" value="Submit">
-
+<?php } ?>
 
           </form>
 
