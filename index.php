@@ -1,6 +1,8 @@
   <?php include "header.php"; ?>
   <?php include "footer.php"; ?>
-  <?php headernav();
+  <?php   error_reporting(0);
+
+headernav();
   session_start();
      session_unset();
     unset($_SESSION['id_acadsem']);

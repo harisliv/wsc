@@ -1,5 +1,6 @@
   <?php
   include "header.php";
+  include "footer.php";
   session_start();
   require "vendor/autoload.php";
   use GuzzleHttp\Client;
@@ -33,13 +34,17 @@
     ]
     );
 
-
-    $response = (string) $res->getBody();
+      
+    //echo $res->getStatusCode();
+    $contents = $res->getBody()->getContents();
+    //echo $contents;
+    $response = (string) $contents;
     $json = json_decode($response);
     $token = $json->data->access_token;
     $sessid = $json->data->session_id;
     $_SESSION["authtoken"]=$token;
     $_SESSION["sessionid"]=$sessid;
+    //echo "token " . $_SESSION["authtoken"];
   }
 
 
@@ -72,6 +77,7 @@
       $_SESSION["lektiko_acadsem"] = $json2->data->acadsems[0]->lektiko_acadsem;
 
   }
+  
 
 }
 
