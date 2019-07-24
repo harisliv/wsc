@@ -11,7 +11,6 @@
   error_reporting(E_ALL);
   error_reporting(0);
 
-  $client = new GuzzleHttp\Client();
 
   try {
 
@@ -21,10 +20,11 @@
   //(empty($_POST['id_acadsem'])  ? $_SESSION["id_acadsem"] = NULL : $_SESSION["id_acadsem"] = $_POST['id_acadsem']);
 
 
+  $client1 = new GuzzleHttp\Client();
 
   if(!isset($_SESSION["authtoken"])) {
 
-  $res = $client->request('POST', 'http://localhost/shedulerapi/sessions',
+  $res = $client1->request('POST', 'http://localhost/shedulerapi/sessions',
     [
     'json' =>
       [
@@ -34,7 +34,7 @@
     ]
     );
 
-      
+
     //echo $res->getStatusCode();
     $contents = $res->getBody()->getContents();
     //echo $contents;
@@ -48,7 +48,7 @@
   }
 
 
-
+/*
   $client3 = new GuzzleHttp\Client();
   $res3 = $client3->request('GET', 'http://localhost/shedulerapi/controller/acad_sem.php',
   [
@@ -77,7 +77,7 @@
       $_SESSION["lektiko_acadsem"] = $json2->data->acadsems[0]->lektiko_acadsem;
 
   }
-  
+*/
 
 }
 
@@ -96,22 +96,11 @@
    <center><h1>ACAD SEM</h1></center>
    <?php
      if(isset($_POST["id_acadsem"])) {
-       echo "<br>id -- >" . $_SESSION["id_acadsem"];
-       echo "<br>lektiko -- >" . $_SESSION["lektiko_acadsem"] . "<br>";
+       echo "<br>session id -- >" . $_SESSION["id_acadsem"];
+       echo "<br>session lektiko -- >" . $_SESSION["lektiko_acadsem"] . "<br>";
      }
      ?>
-   <form action="#" method="post">
-   <div class='form-group'>
-       <select name='id_acadsem'>
-         <?php for ($x = 0; $x < $json3->data->rows_returned; $x++) { ?>
-         <option value="<?php print_r($json3->data->acadsems[$x]->id); ?>">
-           <?php print_r($json3->data->acadsems[$x]->lektiko_acadsem); ?>
-         </option>
-       <?php } ?>
-       </select>
-     </div>
-     <input type="submit" value="Submit">
-   </form>
+
 
    <center><h1>SESSION INFO</h1></center>
    <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>

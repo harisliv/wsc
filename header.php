@@ -1,15 +1,33 @@
 <?php
-
+session_start();
+require "vendor/autoload.php";
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 error_reporting(0);
 
 
+
+
+
 function headernav()
 {
-	
+	//if(isset($_SESSION["authtoken"])) {
 
+	$client3 = new GuzzleHttp\Client();
+	$res3 = $client3->request('GET', 'http://localhost/shedulerapi/controller/acad_sem.php',
+	[
+	'headers' => ['Authorization' => $_SESSION["authtoken"]]
+	]
+	);
+
+	$body3 = $res3->getBody();
+	$string3 = $body3->getContents();
+	$json3 = json_decode($string3);
+//}
   ?>
 <!DOCTYPE html>
 <head>
@@ -96,11 +114,54 @@ function headernav()
             <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">New Room availability</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">New course this year</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newscheduleraio.php">Scheduler</a>
-            <a class="nav-item nav-link now" href="http://localhost/wsc/loginform.php"><?php echo $_SESSION["lektiko_acadsem"]; ?></a>
-            <?php  }?>
+					<?php  }?>
+
+							<form action="#" method="post">
+								<select name='id_acadsem'>
+				          <?php for ($x = 0; $x < $json3->data->rows_returned; $x++) { ?>
+										<option value="<?php print_r($json3->data->acadsems[$x]->id); ?>">
+					            <?php print_r($json3->data->acadsems[$x]->lektiko_acadsem); ?>
+					          </option>
+				        <?php } ?>
+				        </select>
+								<select name="learning_sem">
+								  <option value="Α">Α</option>
+									<option value="Β">Β</option>
+									<option value="Γ">Γ</option>
+									<option value="Δ">Δ</option>
+									<option value="Ε">Ε</option>
+									<option value="Ζ">Ζ</option>
+									<option value="Η">Η</option>
+									<option value="ΣΤ">ΣΤ</option>
+								</select>
+							<input type="submit" name="form2">
+							</form>
+
         </div>
     </div>
 </nav>
+
+<?php $_SESSION["id_acadsem"] = 1;
+if(isset($_POST["form2"])){
+	echo $_POST["id_acadsem"];
+	echo $_POST["learning_sem"];
+	//if(isset($_POST["id_acadsem"])) {
+		$client2 = new GuzzleHttp\Client();
+		$res2 = $client2->request('GET', 'http://localhost/shedulerapi/controller/acad_sem.php',
+		[
+		'headers' => ['Authorization' => $_SESSION["authtoken"]],
+		'query' => ['id' => $_POST["id_acadsem"]]
+		]
+		);
+
+		$body2 = $res2->getBody();
+		$string2 = $body2->getContents();
+		$json2 = json_decode($string2);
+		$_SESSION["id_acadsem"] = $json2->data->acadsems[0]->id;
+		$_SESSION["lektiko_acadsem"] = $json2->data->acadsems[0]->lektiko_acadsem;
+
+//}
+} ?>
 
 <main role="main" class="container starter-template">
 

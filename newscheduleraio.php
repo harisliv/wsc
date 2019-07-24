@@ -17,7 +17,39 @@
         use Psr\Http\Message\ResponseInterface;
 
         use GuzzleHttp\Promise;
+
+        (empty($_POST['username'])  ? $username = NULL : $username = $_POST['username']);
+        (empty($_POST['password'])  ? $password = NULL : $password = $_POST['password']);
+
+        $client1 = new GuzzleHttp\Client();
+
+        if(!isset($_SESSION["authtoken"])) {
+
+        $res = $client1->request('POST', 'http://localhost/shedulerapi/sessions',
+          [
+          'json' =>
+            [
+            'username' => $username,
+            'password' => $password
+            ]
+          ]
+          );
+
+
+          //echo $res->getStatusCode();
+          $contents = $res->getBody()->getContents();
+          //echo $contents;
+          $response = (string) $contents;
+          $json = json_decode($response);
+          $token = $json->data->access_token;
+          $sessid = $json->data->session_id;
+          $_SESSION["authtoken"]=$token;
+          $_SESSION["sessionid"]=$sessid;
+          //echo "token " . $_SESSION["authtoken"];
+        }
+
         headernav();
+
         $client = new GuzzleHttp\Client(['base_uri' => 'http://localhost/shedulerapi/controller/']);
 
 
@@ -130,7 +162,7 @@
 
           $promise->then(
             function (ResponseInterface $res) {
-              echo "other" . $res->getStatusCode() . "\n";
+              //echo "other" . $res->getStatusCode() . "\n";
               $json = json_decode((string)$res->getBody());
             },
             function (RequestException $e) {
@@ -152,11 +184,12 @@
         $header_authtoken = ['Authorization' => $_SESSION["authtoken"]];
 
         $room_avail_header = ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'available' => 'Y']];
+        $scheduler_header = ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"]]];
         // Initiate each request but do not block
         $promises = [
             'course' => $client->getAsync('course.php', $header),
             'room_avail'  => $client->getAsync('room_avail.php', $room_avail_header),
-            'scheduler'  => $client->getAsync('scheduler.php', $header),
+            'scheduler'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"]]]),
             'professor'  => $client->getAsync('professor.php', $header)
         ];
 
@@ -279,7 +312,15 @@
         //print_r($course_array);
         //echo $scheduler_array[0]->id_course;
         //echo $course_array->data->courses[0]->name;
-
+        //echo "x:" . $x;
+        //echo " room avail rows: " . $room_avail_rows . "<br>";
+        //echo "scheduler_rows: " . $scheduler_rows . "<br>";
+        //echo "room_avail_array_id: " . $room_avail_array[$x]->id . "<br>";
+        //echo "room_avail_array_lektiko: " . $room_array[$x]->data->rooms[0]->lektiko_room . "<br>";
+        //echo $room_array_sch[$scheduler_rows]->data->rooms[0]->lektiko_room . "<br>";
+        //echo $course_array[$scheduler_rows]->data->courses[0]->name . "<br>";
+        //echo $scheduler_array[$scheduler_rows]->type_division . "<br>";
+        //echo $scheduler_array[$scheduler_rows]->division_str . "<br>";
 
         if($scheduler_rows > $room_avail_rows){
           $loop = $scheduler_rows;
