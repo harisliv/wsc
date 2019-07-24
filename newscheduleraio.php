@@ -21,11 +21,11 @@
         (empty($_POST['username'])  ? $username = NULL : $username = $_POST['username']);
         (empty($_POST['password'])  ? $password = NULL : $password = $_POST['password']);
 
-        $client1 = new GuzzleHttp\Client();
+        $client = new GuzzleHttp\Client(['base_uri' => 'http://localhost/shedulerapi/controller/']);
 
         if(!isset($_SESSION["authtoken"])) {
 
-        $res = $client1->request('POST', 'http://localhost/shedulerapi/sessions',
+        $res = $client->request('POST', 'sessions.php',
           [
           'json' =>
             [
@@ -50,7 +50,6 @@
 
         headernav();
 
-        $client = new GuzzleHttp\Client(['base_uri' => 'http://localhost/shedulerapi/controller/']);
 
 
         if(!empty($_POST['id_room_avail']) || !empty($_POST['id_course']) || !empty($_POST['type_division']) || !empty($_POST['id_prof'])){
