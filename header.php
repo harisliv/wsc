@@ -108,7 +108,7 @@ function headernav()
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <?php  if(isset($_SESSION["authtoken"]) && isset($_SESSION["id_acadsem"])){ ?>
+          <?php  if(isset($_SESSION["authtoken"])){ ?>
             <a class="nav-item nav-link" href="http://localhost/wsc/searchcoursebyid.php">Search Course by ID</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/showallcourses.php">Show All Courses</a>
             <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">New Room availability</a>
