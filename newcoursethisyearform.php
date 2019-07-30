@@ -27,8 +27,14 @@ $url2 = "http://httpbin.org/post";
 
 try {
 
-  $id_course = $_POST['id_course'];
-  echo $id_course;
+  $nameid = $_POST['id_course'];
+  $pieces = explode(",", $nameid);
+  echo $pieces[0]; // piece1
+  echo $pieces[1];
+
+  $id_course = $pieces[0];
+  $name = $pieces[1];
+  $learn_sem = $_POST['learn_sem'];
   $id_responsible_prof = $_POST['id_responsible_prof'];
   //$id_acadsem = $_POST['id_acadsem'];
   (empty($_POST['count_div_theory'])  ? $count_div_theory = NULL : $count_div_theory = $_POST['count_div_theory']);
@@ -38,7 +44,7 @@ try {
   $client = new GuzzleHttp\Client();
 
   $promise = $client->postAsync($url, ['headers' => ['Authorization' => $_SESSION["authtoken"]],
-  'json' =>['id_course' => $id_course,'id_responsible_prof' => $id_responsible_prof,'id_acadsem' => $_SESSION["id_acadsem"],'count_div_theory' => $count_div_theory,'count_div_lab' => $count_div_lab,'count_div_practice' => $count_div_practice]]);
+  'json' =>['id_course' => $id_course,'name' => $name,'learn_sem' => $learn_sem,'id_responsible_prof' => $id_responsible_prof,'id_acadsem' => $_SESSION["id_acadsem"],'count_div_theory' => $count_div_theory,'count_div_lab' => $count_div_lab,'count_div_practice' => $count_div_practice]]);
 
       $promise->then(
         function (ResponseInterface $res) {

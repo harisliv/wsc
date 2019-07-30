@@ -124,8 +124,8 @@ function headernav()
 					          </option>
 				        <?php } ?>
 				        </select>
-								<select name="learning_sem">
-								  <option value="Α">Α</option>
+								<select name="learn_sem">
+								  <option value="A">A</option>
 									<option value="Β">Β</option>
 									<option value="Γ">Γ</option>
 									<option value="Δ">Δ</option>
@@ -142,9 +142,13 @@ function headernav()
 </nav>
 
 <?php $_SESSION["id_acadsem"] = 1;
+			$_SESSION["learn_sem"] = "A";
+
+				echo "sess elemnts" . $_SESSION["id_acadsem"];
+				echo "sess elemnts" . $_SESSION["learn_sem"];
 if(isset($_POST["form2"])){
-	echo $_POST["id_acadsem"];
-	echo $_POST["learning_sem"];
+	echo "<br> post elements " . $_POST["id_acadsem"];
+	echo "<br> post elements " . $_POST["learn_sem"];
 	//if(isset($_POST["id_acadsem"])) {
 		$client2 = new GuzzleHttp\Client();
 		$res2 = $client2->request('GET', 'http://localhost/shedulerapi/controller/acad_sem.php',
@@ -159,7 +163,7 @@ if(isset($_POST["form2"])){
 		$json2 = json_decode($string2);
 		$_SESSION["id_acadsem"] = $json2->data->acadsems[0]->id;
 		$_SESSION["lektiko_acadsem"] = $json2->data->acadsems[0]->lektiko_acadsem;
-
+		$_SESSION["learn_sem"] = $_POST["learn_sem"];
 //}
 } ?>
 

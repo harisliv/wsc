@@ -47,12 +47,20 @@
            <label>id_course</label>
            <select name='id_course'>
              <?php for ($x = 0; $x < $json->data->rows_returned; $x++) { ?>
-             <option value="<?php print_r($json->data->courses[$x]->id); ?>">
-               <?php print_r($json->data->courses[$x]->name); ?>
+             <option value="<?php echo $json->data->courses[$x]->course_id . "," . $json->data->courses[$x]->name; ?>">
+               <?php echo $json->data->courses[$x]->name; ?>
              </option>
            <?php } ?>
            </select>
          </div>
+
+         <label>LEARN_SEM</label>
+         <select name='learn_sem'>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+        </select>
 
              <div class='form-group'>
                  <label>id_responsible_prof</label>
