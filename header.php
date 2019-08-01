@@ -126,13 +126,13 @@ function headernav()
 				        </select>
 								<select name="learn_sem">
 								  <option value="A">A</option>
-									<option value="Β">Β</option>
-									<option value="Γ">Γ</option>
-									<option value="Δ">Δ</option>
-									<option value="Ε">Ε</option>
-									<option value="Ζ">Ζ</option>
-									<option value="Η">Η</option>
-									<option value="ΣΤ">ΣΤ</option>
+									<option value="B">B</option>
+									<option value="C">C</option>
+									<option value="D">D</option>
+									<option value="E">E</option>
+									<option value="F">F</option>
+									<option value="G">G</option>
+									<option value="H">H</option>
 								</select>
 							<input type="submit" name="form2">
 							</form>

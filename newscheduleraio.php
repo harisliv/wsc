@@ -186,7 +186,11 @@
         $scheduler_header = ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"]]];
         // Initiate each request but do not block
         $promises = [
-            'course' => $client->getAsync('course.php', $header),
+            'course' => $client->getAsync('course_this_year.php',
+            [
+            'headers' => ['Authorization' => $_SESSION["authtoken"]],
+            'query' => ['learn_sem' => $_SESSION["learn_sem"], 'acad_sem' => $_SESSION["id_acadsem"]],
+            ]),
             'room_avail'  => $client->getAsync('room_avail.php', $room_avail_header),
             'scheduler'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"]]]),
             'professor'  => $client->getAsync('professor.php', $header)
@@ -226,7 +230,7 @@
         $body = $results['course']['value']->getBody();
         $string = $body->getContents();
         $json = json_decode($string);
-        $course_list_array = $json->data->courses;
+        $course_list_array = $json->data->coursethisyears;
         $course_rows = $json->data->rows_returned;
 
 
