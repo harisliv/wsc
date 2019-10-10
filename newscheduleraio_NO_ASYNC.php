@@ -211,7 +211,7 @@
 
       $room_header_2 = ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_room ]];
       $timeslot_header_2 = ['headers' => $header_authtoken,'query' =>['id' => $scheduler_array[$x]->id_ts]];
-      $course_header = ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_course]];
+      $course_header = ['headers' => $header_authtoken,'query' => ['id_course' => $scheduler_array[$x]->id_course]];
       //print_r($room_header_2);
 
 
@@ -219,7 +219,7 @@
         $promises = [
             'room_2'   => $client->getAsync('room.php', ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_room ]]),
             'timeslot_2'  => $client->getAsync('timeslot.php', ['headers' => $header_authtoken,'query' =>['id'=>$scheduler_array[$x]->id_ts ]]),
-            'course_2'  => $client->getAsync('course.php', ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_course]])
+            'course_2'  => $client->getAsync('course_this_year.php', ['headers' => $header_authtoken,'query' => ['id_course' => $scheduler_array[$x]->id_course]])
         ];
 
         $results = Promise\unwrap($promises);
@@ -301,7 +301,7 @@
                 elseif($timeslot_array_sch[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array_sch[$x]->data->timeslots[0]->day) {
                   //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
                   echo $room_array_sch[$x]->data->rooms[0]->lektiko_room . "<br>";
-                  echo $course_array[$x]->data->courses[0]->name . "<br>";
+                  echo $course_array[$x]->data->coursethisyears[0]->name . "<br>";
                   echo $scheduler_array[$x]->type_division . "<br>";
                   echo $scheduler_array[$x]->division_str . "<br>";
                 }
@@ -320,7 +320,7 @@
              <label>Course</label>
              <select name='id_course'>
                <?php for ($x = 0; $x < $course_rows; $x++) { ?>
-               <option value="<?php print_r($course_list_array[$x]->id); ?>">
+               <option value="<?php print_r($course_list_array[$x]->id_course); ?>">
                  <?php print_r($course_list_array[$x]->name); ?>
                </option>
              <?php } ?>
