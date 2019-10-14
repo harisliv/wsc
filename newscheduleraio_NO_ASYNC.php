@@ -77,7 +77,8 @@
       'id_prof' => $id_prof,
       'id_room' => $room_id,
       'id_ts' => $ts_id,
-      'division_str' => $division_str
+      'division_str' => $division_str,
+      'learn_sem' => $_SESSION["learn_sem"]
       ]
       ]);
 
@@ -118,8 +119,6 @@
       $header = ['headers' => ['Authorization' => $_SESSION["authtoken"]]];
       $header_authtoken = ['Authorization' => $_SESSION["authtoken"]];
 
-      $room_avail_header = ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'available' => 'Y']];
-      $scheduler_header = ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"]]];
       // Initiate each request but do not block
       $promises = [
           'course' => $client->getAsync('course_this_year.php',
@@ -127,8 +126,8 @@
           'headers' => ['Authorization' => $_SESSION["authtoken"]],
           'query' => ['learn_sem' => $_SESSION["learn_sem"], 'acad_sem' => $_SESSION["id_acadsem"]],
           ]),
-          'room_avail'  => $client->getAsync('room_avail.php', $room_avail_header),
-          'scheduler'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"]]]),
+          'room_avail'  => $client->getAsync('room_avail.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'available' => 'Y', 'learn_sem' => $_SESSION["learn_sem"]]]),
+          'scheduler'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]]),
           'professor'  => $client->getAsync('professor.php', $header)
       ];
 
