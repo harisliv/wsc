@@ -141,14 +141,17 @@ function headernav()
     </div>
 </nav>
 
-<?php $_SESSION["id_acadsem"] = 1;
-			$_SESSION["learn_sem"] = "A";
+<?php
+if(!isset($_SESSION["id_acadsem"]) && !isset($_SESSION["learn_sem"])) {
 
-				echo "sess elemnts" . $_SESSION["id_acadsem"];
-				echo "sess elemnts" . $_SESSION["learn_sem"];
+			$_SESSION["id_acadsem"] = 1;
+			$_SESSION["learn_sem"] = "A";
+}
+				//echo "sess acad sem" . $_SESSION["id_acadsem"];
+				//echo "sess learn sem" . $_SESSION["learn_sem"];
 if(isset($_POST["form2"])){
-	echo "<br> post elements " . $_POST["id_acadsem"];
-	echo "<br> post elements " . $_POST["learn_sem"];
+	//echo "<br> post acad sem " . $_POST["id_acadsem"];
+	//echo "<br> post learn sem " . $_POST["learn_sem"];
 	//if(isset($_POST["id_acadsem"])) {
 		$client2 = new GuzzleHttp\Client();
 		$res2 = $client2->request('GET', 'http://localhost/shedulerapi/controller/acad_sem.php',

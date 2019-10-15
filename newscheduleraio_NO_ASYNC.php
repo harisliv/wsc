@@ -42,7 +42,7 @@
 
       if(!empty($_POST['id_room_avail']) || !empty($_POST['id_course']) || !empty($_POST['type_division']) || !empty($_POST['id_prof'])){
 
-        (empty($_POST['id_room_avail'])  ? $id_room_avail = NULL : $id_room_avail = $_POST['id_room_avail']);
+      (empty($_POST['id_room_avail'])  ? $id_room_avail = NULL : $id_room_avail = $_POST['id_room_avail']);
       (empty($_POST['id_course'])  ? $id_course = NULL : $id_course = $_POST['id_course']);
       (empty($_POST['type_division'])  ? $type_division = NULL : $type_division = $_POST['type_division']);
       (empty($_POST['id_prof'])  ? $id_prof = NULL : $id_prof = $_POST['id_prof']);
@@ -55,7 +55,7 @@
 
 
       foreach($_POST['testtableradio'] as $option_num => $option_val){
-      echo $option_num." ".$option_val."<br>";
+      //echo $option_num." ".$option_val."<br>";
       $room_avail_header = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'id' => $option_val ]];
 
 
@@ -178,9 +178,6 @@
       //print_r($scheduler_array);
       //echo $scheduler_rows;
 
-      $room_header_1 = ['headers' => $header_authtoken,'query' => ['id' => $room_avail_array[$x]->id_room ]];
-      $timeslot_header_1 = ['headers' => $header_authtoken,'query' =>['id'=>$room_avail_array[$x]->id_ts ]];
-
       for ($x = 0; $x < $room_avail_rows; $x++) {
         $promises = [
             'room_1'   => $client->getAsync('room.php', ['headers' => $header_authtoken,'query' => ['id' => $room_avail_array[$x]->id_room ]]),
@@ -269,7 +266,9 @@
 
       ?>
 
-      <pre> <?php //print_r($json->data->rooms[0]->id); ?> </pre>
+      <pre> <?php //print_r($json->data->rooms[0]->id);
+      echo "loop: " . $loop; ?> </pre>
+
       <form action="newscheduleraio_NO_ASYNC.php" method="post">
 
       <table class="table table-bordered">
@@ -288,6 +287,11 @@
             <td><?php echo $st; ?></td>
             <?php for ($y = 0; $y <= 4; $y++) { ?>
             <td><?php for ($x = 0; $x < $loop; $x++) {
+              //echo "==========<br>";
+              //echo "<br>str" . $x . ": ". $scheduler_array[$x]->division_str . "<br>";
+              //echo "start time: " . $timeslot_array_sch[$x]->data->timeslots[0]->start_time . "<->" . $st . "<br>";
+              //echo "week day: " . $timeslot_array[$x]->data->timeslots[0]->day . "<->" . $weekdb[$y] . "<br>";
+              //echo "==========";
               if($timeslot_array[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day) {
                 //echo $timeslot_array->data->timeslots[$x]->start_time . ":00";
                 //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array->data->timeslots[$x]->day);
