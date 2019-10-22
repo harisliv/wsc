@@ -18,6 +18,7 @@
       use Psr\Http\Message\ResponseInterface;
 
       use GuzzleHttp\Promise;
+      try {
 
       (empty($_POST['username'])  ? $username = NULL : $username = $_POST['username']);
       (empty($_POST['password'])  ? $password = NULL : $password = $_POST['password']);
@@ -48,6 +49,10 @@
       (empty($_POST['id_prof'])  ? $id_prof = NULL : $id_prof = $_POST['id_prof']);
       (empty($_POST['division_str'])  ? $division_str = NULL : $division_str = $_POST['division_str']);
 
+      $nameid = $_POST['id_course'];
+      $pieces = explode(",", $nameid);
+      //echo $pieces[0] . "<br>"; // piece1
+      //echo $pieces[1];
       //echo $id_prof;
 
       $header = ['headers' => ['Authorization' => $_SESSION["authtoken"]]];
@@ -70,14 +75,14 @@
       ['headers' => ['Authorization' => $_SESSION["authtoken"]],
       'json' =>
       [
-      'id_course' => $id_course,
+      'id_course' => $pieces[0],
       'id_acadsem' => $_SESSION["id_acadsem"],
-      'type_division' => $type_division,
+      'type_division' => $pieces[1],
       'lektiko_division' => "tha doume pws",
       'id_prof' => $id_prof,
       'id_room' => $room_id,
       'id_ts' => $ts_id,
-      'division_str' => $division_str,
+      'division_str' => "FAIL",
       'learn_sem' => $_SESSION["learn_sem"]
       ]
       ]);
@@ -266,6 +271,21 @@
 
       ?>
 
+      <div class="sidenav">
+        <div class="form-group">
+   <label for="exampleFormControlSelect2">Example multiple select</label>
+   <select multiple class="form-control" id="exampleFormControlSelect2">
+     <option>1</option>
+     <option>2</option>
+     <option>3</option>
+     <option>4</option>
+     <option>5</option>
+   </select>
+ </div>
+      </div>
+
+      <div class="main">
+
       <pre> <?php //print_r($json->data->rooms[0]->id);
       echo "loop: " . $loop; ?> </pre>
 
@@ -321,19 +341,64 @@
 
          <div class='form-group'>
              <label>Course</label>
-             <select name='id_course'>
-               <?php for ($x = 0; $x < $course_rows; $x++) { ?>
-               <option value="<?php print_r($course_list_array[$x]->id_course); ?>">
-                 <?php print_r($course_list_array[$x]->name); ?>
-               </option>
-             <?php } ?>
-             </select>
+             <div class="form-group">
+              <select multiple class="form-control" id="exampleFormControlSelect2" name='id_course'>
+                  <?php for ($x = 0; $x < $course_rows; $x++) { ?>
+                    <?php
+                    if ($course_list_array[$x]->count_div_lab > 0) {
+                    for ($y = 1; $y <= $course_list_array[$x]->count_div_lab; $y++){?>
+
+                    <option value="<?php $lab = "LAB"; echo $course_list_array[$x]->id_course . "," . $lab; ?>">
+
+                      <?php
+                        echo "Lab Division " . $y . " ";
+                        echo $course_list_array[$x]->name . "<br>";
+                        ?>
+                        </option>
+                        <?php
+                      }
+                    }
+                    ?>
+
+                    <?php
+                    if ($course_list_array[$x]->count_div_theory > 0) {
+                    for ($y = 1; $y <= $course_list_array[$x]->count_div_theory; $y++){?>
+
+                    <option value="<?php $theory = "THEORY"; echo $course_list_array[$x]->id_course . "," . $theory; ?>">
+
+                      <?php
+                        echo "Lab Theory " . $y . " ";
+                        echo $course_list_array[$x]->name . "<br>";
+                        ?>
+                        </option>
+                        <?php
+                      }
+                    }
+                    ?>
+
+                    <?php
+                    if ($course_list_array[$x]->count_div_practice > 0) {
+                    for ($y = 1; $y <= $course_list_array[$x]->count_div_practice; $y++){?>
+
+                    <option value="<?php $practice = "PRACTICE"; echo $course_list_array[$x]->id_course . "," . $practice; ?>">
+
+                      <?php
+                        echo "Lab practice " . $y . " ";
+                        echo $course_list_array[$x]->name . "<br>";
+                        ?>
+                        </option>
+                        <?php
+                      }
+                    }
+                    ?>
+
+                <?php } ?>
+              </select>
+            </div>
+
            </div>
 
-           <input type="radio" name="type_division" value="lab">lab
-           <input type="radio" name="type_division" value="theory">theory
-           <input type="radio" name="type_division" value="practice">practice
-           <br>
+
 
            <div class='form-group'>
                <label>Καθηγητής</label>
@@ -346,8 +411,6 @@
                </select>
              </div>
 
-             Division
-             <input type="text" name="division_str"><br>
 
 
 
@@ -356,6 +419,23 @@
 
           </form>
 
+        </div>
+
+        <?php }
+
+        catch (GuzzleHttp\Exception\BadResponseException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = (string) $response->getBody();
+            $json = json_decode($responseBodyAsString);
+            $responsestatuscode = $response->getStatusCode();
+            $messages = $json->messages;
+        }
+
+
+     ?>
+
+
+     <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
 
 
