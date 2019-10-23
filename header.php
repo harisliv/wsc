@@ -95,15 +95,16 @@ function headernav()
 	}
 
 	.sidenav {
-  width: 130px;
-  position: fixed;
-  z-index: 1;
-  top: 150px;
-  left: 10px;
-  background: #eee;
-  overflow-x: hidden;
-  padding: 8px 0;
-}
+	    width: 20%;
+	    position: fixed;
+	    z-index: 1;
+	    top: 150px;
+	    left: 10px;
+	    background: #eee;
+	    overflow-y: hidden;
+	    padding: 8px 8px;
+	    height: 80vh;
+	}
 
 .main {
   margin-left: 140px; /* Same width as the sidebar + left position in px */
@@ -115,6 +116,12 @@ function headernav()
   font-size: 25px;
   color: #2196F3;
   display: block;
+}
+
+#exampleFormControlSelect2 {
+    overflow: auto;
+    height: 70vh;
+
 }
 
   </style>

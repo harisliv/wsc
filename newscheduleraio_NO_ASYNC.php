@@ -268,28 +268,90 @@
       else {
         $loop = $room_avail_rows;
       }
-
+echo "loop: " . $loop;
       ?>
 
+      <form action="newscheduleraio_NO_ASYNC.php" method="post">
+
+
       <div class="sidenav">
-        <div class="form-group">
-   <label for="exampleFormControlSelect2">Example multiple select</label>
-   <select multiple class="form-control" id="exampleFormControlSelect2">
-     <option>1</option>
-     <option>2</option>
-     <option>3</option>
-     <option>4</option>
-     <option>5</option>
-   </select>
- </div>
+
+        <div class='form-group'>
+            <label>Καθηγητής</label>
+            <select name='id_prof'>
+              <?php for ($x = 0; $x < $professor_rows; $x++) { ?>
+              <option value="<?php print_r($professor_array[$x]->id); ?>">
+                <?php print_r($professor_array[$x]->fullname); ?>
+              </option>
+            <?php } ?>
+            </select>
+          </div>
+
+        <div class='form-group'>
+            <label>Course</label>
+            <div class="form-group">
+             <select multiple class="form-control tallform" id="exampleFormControlSelect2" name='id_course'>
+                 <?php for ($x = 0; $x < $course_rows; $x++) { ?>
+                   <?php
+                   if ($course_list_array[$x]->count_div_lab > 0) {
+                   for ($y = 1; $y <= $course_list_array[$x]->count_div_lab; $y++){?>
+
+                   <option value="<?php $lab = "LAB"; echo $course_list_array[$x]->id_course . "," . $lab; ?>">
+
+                     <?php
+                       echo "Lab Division " . $y . " ";
+                       echo $course_list_array[$x]->name . "<br>";
+                       ?>
+                       </option>
+                       <?php
+                     }
+                   }
+                   ?>
+
+                   <?php
+                   if ($course_list_array[$x]->count_div_theory > 0) {
+                   for ($y = 1; $y <= $course_list_array[$x]->count_div_theory; $y++){?>
+
+                   <option value="<?php $theory = "THEORY"; echo $course_list_array[$x]->id_course . "," . $theory; ?>">
+
+                     <?php
+                       echo "Lab Theory " . $y . " ";
+                       echo $course_list_array[$x]->name . "<br>";
+                       ?>
+                       </option>
+                       <?php
+                     }
+                   }
+                   ?>
+
+                   <?php
+                   if ($course_list_array[$x]->count_div_practice > 0) {
+                   for ($y = 1; $y <= $course_list_array[$x]->count_div_practice; $y++){?>
+
+                   <option value="<?php $practice = "PRACTICE"; echo $course_list_array[$x]->id_course . "," . $practice; ?>">
+
+                     <?php
+                       echo "Lab practice " . $y . " ";
+                       echo $course_list_array[$x]->name . "<br>";
+                       ?>
+                       </option>
+                       <?php
+                     }
+                   }
+                   ?>
+
+               <?php } ?>
+             </select>
+           </div>
+
+          </div>
       </div>
 
       <div class="main">
 
       <pre> <?php //print_r($json->data->rooms[0]->id);
-      echo "loop: " . $loop; ?> </pre>
+       ?> </pre>
 
-      <form action="newscheduleraio_NO_ASYNC.php" method="post">
 
       <table class="table table-bordered">
         <thead>
@@ -339,77 +401,11 @@
       </table>
       <?php if($room_avail_rows > 0) {?>
 
-         <div class='form-group'>
-             <label>Course</label>
-             <div class="form-group">
-              <select multiple class="form-control" id="exampleFormControlSelect2" name='id_course'>
-                  <?php for ($x = 0; $x < $course_rows; $x++) { ?>
-                    <?php
-                    if ($course_list_array[$x]->count_div_lab > 0) {
-                    for ($y = 1; $y <= $course_list_array[$x]->count_div_lab; $y++){?>
-
-                    <option value="<?php $lab = "LAB"; echo $course_list_array[$x]->id_course . "," . $lab; ?>">
-
-                      <?php
-                        echo "Lab Division " . $y . " ";
-                        echo $course_list_array[$x]->name . "<br>";
-                        ?>
-                        </option>
-                        <?php
-                      }
-                    }
-                    ?>
-
-                    <?php
-                    if ($course_list_array[$x]->count_div_theory > 0) {
-                    for ($y = 1; $y <= $course_list_array[$x]->count_div_theory; $y++){?>
-
-                    <option value="<?php $theory = "THEORY"; echo $course_list_array[$x]->id_course . "," . $theory; ?>">
-
-                      <?php
-                        echo "Lab Theory " . $y . " ";
-                        echo $course_list_array[$x]->name . "<br>";
-                        ?>
-                        </option>
-                        <?php
-                      }
-                    }
-                    ?>
-
-                    <?php
-                    if ($course_list_array[$x]->count_div_practice > 0) {
-                    for ($y = 1; $y <= $course_list_array[$x]->count_div_practice; $y++){?>
-
-                    <option value="<?php $practice = "PRACTICE"; echo $course_list_array[$x]->id_course . "," . $practice; ?>">
-
-                      <?php
-                        echo "Lab practice " . $y . " ";
-                        echo $course_list_array[$x]->name . "<br>";
-                        ?>
-                        </option>
-                        <?php
-                      }
-                    }
-                    ?>
-
-                <?php } ?>
-              </select>
-            </div>
-
-           </div>
 
 
 
-           <div class='form-group'>
-               <label>Καθηγητής</label>
-               <select name='id_prof'>
-                 <?php for ($x = 0; $x < $professor_rows; $x++) { ?>
-                 <option value="<?php print_r($professor_array[$x]->id); ?>">
-                   <?php print_r($professor_array[$x]->fullname); ?>
-                 </option>
-               <?php } ?>
-               </select>
-             </div>
+
+
 
 
 
