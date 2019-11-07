@@ -2,3 +2,24 @@ UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` 
 
 
 UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 1; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 2; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 3; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 4; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 5; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 6; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 7; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 8; UPDATE `room_availability` SET `available` = 'Y' WHERE `room_availability`.`id` = 9;
+
+
+
+      $res = $client->request('GET', 'http://localhost/shedulerapi/controller/scheduler.php',
+    [
+      'headers' => ['Authorization' => $_SESSION["authtoken"]],
+      'query' => ['id_course' => $_POST['id_course'] ,
+                  'id_acadsem' => $_SESSION["id_acadsem"],
+                  'type_division' => $_POST['type_division']
+                ]
+    ]
+    );
+
+    echo "skara" . $_POST['id_course'] . $_POST['type_division'];
+
+    $body = $res->getBody();
+    $string = $body->getContents();
+    $json = json_decode($string);
+    //print_r($json);
+
+    'division'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_course' => $_POST['id_course'] ,'id_acadsem' => $_SESSION["id_acadsem"], 'type_division' => $_POST['type_division']]]),

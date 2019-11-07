@@ -22,7 +22,7 @@
       $res = $client->request('GET', 'http://localhost/shedulerapi/controller/room_avail.php',
       [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['day' => $day, 'start_time' => $start_time, 'room_code' => $room_code],
+      'query' => ['day' => "de", 'start_time' => 8, 'room_code' => "e2"],
       ]
       );
 

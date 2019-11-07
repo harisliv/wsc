@@ -34,6 +34,23 @@
     $string2 = $body2->getContents();
     $json2 = json_decode($string2);
 
+    $res = $client->request('GET', 'http://localhost/shedulerapi/controller/scheduler.php',
+  [
+    'headers' => ['Authorization' => $_SESSION["authtoken"]],
+    'query' => ['id_course' => "123AB" ,
+                'id_acadsem' => 1,
+                'type_division' => "LAB"
+                ]
+]
+  );
+
+  $body = $res->getBody();
+  $string = $body->getContents();
+  $json = json_decode($string);
+  print_r($json);
+  $division_rows = $json->data->rows_returned;
+  echo "division rows" . $division_rows;
+
 
 
 
