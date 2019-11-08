@@ -24,7 +24,7 @@
          try
          {
 
-           $id = "123AB";
+           $id = 1;
            $type ="LAB";
            $acad = 1;
            $client = new GuzzleHttp\Client();
@@ -32,7 +32,10 @@
           $res = $client->request('GET', 'http://localhost/shedulerapi/controller/scheduler.php',
         [
           'headers' => ['Authorization' => $_SESSION["authtoken"]],
-          'query' => ['id_course' => $id, 'id_acadsem' => $acad, 'type_division' => $type],
+          'query' => ['id' => $id ,
+                      'id_acadsem' => $acad,
+                      'type_division' => $type,
+                    ]
         ]
         );
 
@@ -40,11 +43,13 @@
         $string = $body->getContents();
         $json = json_decode($string);
         $messages = $json->messages;
-        print_r($json);
-
+        ?>
+        <pre> <?php
+        print_r($json);?>
+        <pre> <?php
         $promises = [
             'scheduler'  => $client->getAsync('http://localhost/shedulerapi/controller/scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],
-            'query' => ['id_course' => $id, 'id_acadsem' => 1, 'type_division' => $type]]),
+            'query' => ['id' => $id, 'id_acadsem' => 1, 'type_division' => $type]]),
 
         ];
 
