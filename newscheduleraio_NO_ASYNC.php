@@ -39,7 +39,8 @@
 
       headernav();
 
-
+      $nameid = $_POST['id_course'];
+      $pieces = explode(",", $nameid);
 
       if(!empty($_POST['id_room_avail']) || !empty($_POST['id_course']) || !empty($_POST['type_division']) || !empty($_POST['id_prof'])){
 
@@ -49,8 +50,7 @@
       (empty($_POST['id_prof'])  ? $id_prof = NULL : $id_prof = $_POST['id_prof']);
       (empty($_POST['division_str'])  ? $division_str = NULL : $division_str = $_POST['division_str']);
 
-      $nameid = $_POST['id_course'];
-      $pieces = explode(",", $nameid);
+
       //echo $pieces[0] . "<br>"; // piece1
       //echo $pieces[1];
       //echo $id_prof;
@@ -87,7 +87,12 @@
       ]
       ]);
 
-      $json = json_decode($res->getBody()->getContents());
+      $body = $res->getBody();
+      $string = $body->getContents();
+      $json = json_decode($string);
+      $postedid = $json->data->schedulers[0]->id_course;
+      $postedtype = $json->data->schedulers[0]->type_division;
+      //echo "skereeeeeeeeeeeeeeeeeeeeeeeeeeeeee" . $postedid;
 
         if($type_division === "theory"){
 
@@ -117,6 +122,36 @@
         }
       }
 
+      if ($pieces[0] != NULL){
+
+    //    $res = $client->request('PATCH', 'course_this_year.php',
+    //  [
+    //    'headers' => ['Authorization' => $_SESSION["authtoken"]],
+    //    'query' => ['id_course' => $pieces[0],
+    //                'id_acadsem' => $_SESSION["id_acadsem"]],
+    //    'json' =>  ['count_div_lab' => 0]
+    //  ]
+
+    //  );
+
+      $promises = [
+          'patchlab'  => $client->patchAsync('course_this_year.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_course' => $pieces[0] , 'id_acadsem' => $_SESSION["id_acadsem"]],'json' =>  ['count_div_lab' => 0]])
+      ];
+
+      $results = Promise\unwrap($promises);
+
+      // Wait for the requests to complete, even if some of them fail
+      $results = Promise\settle($promises)->wait();
+
+      // You can access each result using the key provided to the unwrap
+      // function.
+
+
+      $body = $results['patchlab']['value']->getBody();
+      $string = $body->getContents();
+      $json = json_decode($string);
+    }
+
 
       $weekdb = array("de", "tr", "te", "pe", "pa");
       $weekgk = array("Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή");
@@ -126,13 +161,10 @@
 
       // Initiate each request but do not block
       $promises = [
-          'course' => $client->getAsync('course_this_year.php',
-          [
-          'headers' => ['Authorization' => $_SESSION["authtoken"]],
-          'query' => ['learn_sem' => $_SESSION["learn_sem"], 'acad_sem' => $_SESSION["id_acadsem"]],
-          ]),
+          'course' => $client->getAsync('course_this_year.php',['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['learn_sem' => $_SESSION["learn_sem"], 'acad_sem' => $_SESSION["id_acadsem"]]]),
           'room_avail'  => $client->getAsync('room_avail.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'available' => 'Y', 'learn_sem' => $_SESSION["learn_sem"]]]),
           'scheduler'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]]),
+
           'professor'  => $client->getAsync('professor.php', $header)
       ];
 
@@ -249,6 +281,28 @@
       }
 
 
+
+      //$_SESSION["postedid"] = $postedid;
+      //$_SESSION["postedtype"] = $postedtype;
+
+
+      //$res = $client->request('GET', 'http://localhost/shedulerapi/controller/scheduler.php',
+      //[
+      //'headers' => ['Authorization' => $_SESSION["authtoken"]],
+      //'query' => ['id_course' => $postedid,
+      //            'id_acadsem' => $_SESSION["id_acadsem"],
+      //            'type_division' => "asdas",
+      //          ]
+      //        ]
+      //      );
+
+      //$body = $res->getBody();
+      //$string = $body->getContents();
+      //$json = json_decode($string);
+
+      //echo "slatt" . $json->data->rows_returned;
+
+
       //print_r($course_array);
       //echo $scheduler_array[0]->id_course;
       //echo $course_array->data->courses[0]->name;
@@ -268,7 +322,7 @@
       else {
         $loop = $room_avail_rows;
       }
-echo "loop: " . $loop;
+      //echo "loop: " . $loop;
       ?>
 
       <form action="newscheduleraio_NO_ASYNC.php" method="post">
@@ -315,7 +369,7 @@ echo "loop: " . $loop;
                    <option value="<?php $theory = "THEORY"; echo $course_list_array[$x]->id_course . "," . $theory; ?>">
 
                      <?php
-                       echo "Lab Theory " . $y . " ";
+                       echo "Theory Division " . $y . " ";
                        echo $course_list_array[$x]->name . "<br>";
                        ?>
                        </option>
@@ -331,7 +385,7 @@ echo "loop: " . $loop;
                    <option value="<?php $practice = "PRACTICE"; echo $course_list_array[$x]->id_course . "," . $practice; ?>">
 
                      <?php
-                       echo "Lab practice " . $y . " ";
+                       echo "Practice Division " . $y . " ";
                        echo $course_list_array[$x]->name . "<br>";
                        ?>
                        </option>
@@ -417,9 +471,10 @@ echo "loop: " . $loop;
 
         </div>
 
-        <?php }
+        <?php
 
-        catch (GuzzleHttp\Exception\BadResponseException $e) {
+
+        }catch (GuzzleHttp\Exception\BadResponseException $e) {
             $response = $e->getResponse();
             $responseBodyAsString = (string) $response->getBody();
             $json = json_decode($responseBodyAsString);
@@ -431,7 +486,7 @@ echo "loop: " . $loop;
      ?>
 
 
-     <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
+      <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
 
 
