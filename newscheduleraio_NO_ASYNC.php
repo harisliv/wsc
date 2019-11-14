@@ -57,7 +57,9 @@
 
       $header = ['headers' => ['Authorization' => $_SESSION["authtoken"]]];
 
-
+      if(count($_POST['testtableradio'])<2){
+        echo "ssssssssssssssssssssssssss";
+      }
 
       foreach($_POST['testtableradio'] as $option_num => $option_val){
       //echo $option_num." ".$option_val."<br>";
@@ -134,8 +136,30 @@
 
     //  );
 
+    $promises = [
+        'getdivcount'  => $client->getAsync('course_this_year.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_course' => $pieces[0] , 'id_acadsem' => $_SESSION["id_acadsem"]]])
+    ];
+
+    $results = Promise\unwrap($promises);
+
+    // Wait for the requests to complete, even if some of them fail
+    $results = Promise\settle($promises)->wait();
+
+    // You can access each result using the key provided to the unwrap
+    // function.
+
+
+    $body = $results['getdivcount']['value']->getBody();
+    $string = $body->getContents();
+    $json = json_decode($string);
+    $course_div_array = $json->data->coursethisyears;
+    $course_lab_div = $course_div_array[0]->count_div_lab;
+
+    if($pieces[1] === "LAB"){
+
+
       $promises = [
-          'patchlab'  => $client->patchAsync('course_this_year.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_course' => $pieces[0] , 'id_acadsem' => $_SESSION["id_acadsem"]],'json' =>  ['count_div_lab' => 0]])
+          'patchlab'  => $client->patchAsync('course_this_year.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_course' => $pieces[0] , 'id_acadsem' => $_SESSION["id_acadsem"]],'json' =>  ['count_div_lab' => $course_lab_div - 1]])
       ];
 
       $results = Promise\unwrap($promises);
@@ -150,7 +174,10 @@
       $body = $results['patchlab']['value']->getBody();
       $string = $body->getContents();
       $json = json_decode($string);
+
     }
+    }
+
 
 
       $weekdb = array("de", "tr", "te", "pe", "pa");
@@ -204,6 +231,7 @@
       $json = json_decode($string);
       $course_list_array = $json->data->coursethisyears;
       $course_rows = $json->data->rows_returned;
+      $course_lab_div = $json->data->coursethisyears->count_div_lab;
 
 
       $body = $results['professor']['value']->getBody();
@@ -214,6 +242,8 @@
 
       //print_r($scheduler_array);
       //echo $scheduler_rows;
+
+
 
       for ($x = 0; $x < $room_avail_rows; $x++) {
         $promises = [
