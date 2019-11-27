@@ -45,3 +45,75 @@ echo "skera" . $json->data->rows_returned;
 $scheduled = $json->data->rows_returned;
 
 }
+
+
+
+
+
+
+if ($pieces[0] != NULL){
+
+//    $res = $client->request('PATCH', 'course_this_year.php',
+//  [
+//    'headers' => ['Authorization' => $_SESSION["authtoken"]],
+//    'query' => ['id_course' => $pieces[0],
+//                'id_acadsem' => $_SESSION["id_acadsem"]],
+//    'json' =>  ['count_div_lab' => 0]
+//  ]
+
+//  );
+
+$promises = [
+  'getdivcount'  => $client->getAsync('course_this_year.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_course' => $pieces[0] , 'id_acadsem' => $_SESSION["id_acadsem"]]]),
+  'division'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_course' => $pieces[0], 'id_acadsem' => $_SESSION["id_acadsem"], 'type_division' => $pieces[1]]]),
+
+];
+
+$results = Promise\unwrap($promises);
+
+// Wait for the requests to complete, even if some of them fail
+$results = Promise\settle($promises)->wait();
+
+// You can access each result using the key provided to the unwrap
+// function.
+
+
+$body = $results['getdivcount']['value']->getBody();
+$string = $body->getContents();
+$json = json_decode($string);
+$course_div_array = $json->data->coursethisyears;
+$course_lab_div = $course_div_array[0]->count_div_lab;
+
+$body = $results['division']['value']->getBody();
+$string = $body->getContents();
+$json = json_decode($string);
+$division_rows = $json->data->rows_returned;
+
+$labloop = $course_lab_div - $division_rows;
+
+/*
+if($pieces[1] === "LAB"){
+
+
+$promises = [
+    'patchlab'  => $client->patchAsync('course_this_year.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_course' => $pieces[0] , 'id_acadsem' => $_SESSION["id_acadsem"]],'json' =>  ['count_div_lab' => $course_lab_div - 1]])
+];
+
+$results = Promise\unwrap($promises);
+
+// Wait for the requests to complete, even if some of them fail
+$results = Promise\settle($promises)->wait();
+
+// You can access each result using the key provided to the unwrap
+// function.
+
+
+$body = $results['patchlab']['value']->getBody();
+$string = $body->getContents();
+$json = json_decode($string);
+
+}
+*/
+
+
+}

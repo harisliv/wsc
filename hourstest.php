@@ -216,8 +216,9 @@
         $getdivision_array = $json->data->schedulers;
         $getdivision_rows = $json->data->rows_returned;
 
-        echo "<br> getdivision_rows" . $getdivision_rows;
-
+        echo "<br> rows" . $getdivision_rows;
+        echo "<br>" . $x . "speraaa " . $getdivision_array[$x]->id_course;
+        echo "elaousai " . (rand(10,100));
 
       }
 
@@ -315,30 +316,43 @@
                  <?php for ($x = 0; $x < $course_rows; $x++) {
                    $course_lab_count = $course_list_array[$x]->count_div_lab;
                    $count_lab = 1;
-
-                   for ($z = 0; $z < $courses_rows; $z++) {
-                     if($courses_array[$z]->course_id === $course_list_array[$x]->id_course){
-                       $lab_hours = $courses_array[$z]->hours_lab;
-                     }
-                     }
-
-
-
-                     
-                   for ($z = 0; $z < $getdivision_rows; $z++) {
+                  for ($z = 0; $z < $getdivision_rows; $z++) {
                      if($course_list_array[$x]->id_course === $getdivision_array[$z]->id_course){
                        if ($getdivision_array[$z]->type_division === "LAB"){
-                         if ($lab_hours == $getdivision_rows){
-                         $course_lab_count = $course_list_array[$x]->count_div_lab - $count_lab;
-                         $count_lab++;
-                       }
-                       elseif ($lab_hours > $getdivision_rows){
-                         $lab_hours = $lab_hours - $getdivision_rows;
+                         for ($i = 0; $i < $courses_rows; $i++) {
+                           if($courses_array[$i]->course_id === $getdivision_array[$z]->id_course){
+                             $promises = [
+                                 'getdivision'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_course' => $getdivision_array[$z]->id_course, 'id_acadsem' => $_SESSION["id_acadsem"], 'type_division' => "LAB"]])
+                                 ];
+
+                             // Wait on all of the requests to complete. Throws a ConnectException
+                             // if any of the requests fail
+                             $results = Promise\unwrap($promises);
+
+                             // Wait for the requests to complete, even if some of them fail
+                             $results = Promise\settle($promises)->wait();
+
+                             $body = $results['getdivision']['value']->getBody();
+                             $string = $body->getContents();
+                             $json = json_decode($string);
+                             $getdivision_rows_each = $json->data->rows_returned;
+                             $lab_time_slots_left = $courses_array[$i]->hours_lab;
+
+                             if($courses_array[$i]->hours_lab == $getdivision_rows_each){
+                               $course_lab_count = $course_list_array[$x]->count_div_lab - $count_lab;
+                               $count_lab++;
+                             }
+                             elseif($courses_array[$i]->hours_lab > $getdivision_rows_each){
+                               $lab_time_slots_left = $courses_array[$i]->hours_lab - $getdivision_rows_each;
+                             }
+
+                            }
+                        }
 
                        }
                      }
                    }
-                 }
+
                    if ($course_list_array[$x]->count_div_lab > 0) {
                    for ($y = 1; $y <= $course_lab_count; $y++){?>
 
@@ -346,7 +360,7 @@
 
                      <?php
                        echo "Lab Division " . $y . " ";
-                       echo " hours left: " . $lab_hours;
+                       echo " hours left: " . $lab_time_slots_left;
                        echo " ". $course_list_array[$x]->name . "<br>";
                        ?>
                        </option>
