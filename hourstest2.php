@@ -85,7 +85,7 @@
       'id_prof' => $id_prof,
       'id_room' => $room_id,
       'id_ts' => $ts_id,
-      'division_str' => $pieces[2],
+      'division_str' => $incre,
       'learn_sem' => $_SESSION["learn_sem"]
       ]
       ]);
@@ -314,41 +314,42 @@
              <select multiple class="form-control tallform" id="exampleFormControlSelect2" name='id_course'>
                  <?php for ($x = 0; $x < $course_rows; $x++) {
                    $course_lab_count = $course_list_array[$x]->count_div_lab;
-                   $count_lab[$pieces[2]] = 1;
-                   //$test[$pieces[2]] = 15555;
-                   //echo "spera" . $test[$pieces[2]];
+                   $count_lab = 1;
 
                    for ($z = 0; $z < $courses_rows; $z++) {
                      if($courses_array[$z]->course_id === $course_list_array[$x]->id_course){
-                       $lab_hours[$pieces[2]] = $courses_array[$z]->hours_lab;
+                       $lab_hours = $courses_array[$z]->hours_lab;
                      }
                      }
 
-                     for ($z = 0; $z < $getdivision_rows; $z++) {
+
+
+
+                   for ($z = 0; $z < $getdivision_rows; $z++) {
                      if($course_list_array[$x]->id_course === $getdivision_array[$z]->id_course){
                        if ($getdivision_array[$z]->type_division === "LAB"){
-                         if ($lab_hours[$pieces[2]] == $getdivision_rows){
-                         $course_lab_count = $course_list_array[$x]->count_div_lab - $count_lab[$pieces[2]];
-                         $count_lab[$pieces[2]]++;
+                         if ($lab_hours == $getdivision_rows){
+                         $course_lab_count = $course_list_array[$x]->count_div_lab - $count_lab;
+                         $count_lab++;
+
                        }
                        elseif ($lab_hours > $getdivision_rows){
-                         $lab_hours[$pieces[2]] = $lab_hours[$pieces[2]] - $getdivision_rows;
+                         $lab_hours = $lab_hours - $getdivision_rows;
 
                        }
                      }
                    }
-                   echo "<br> pieces : " . $pieces[2];
-                   echo "<br> countlab: " . $count_lab[$pieces[2]];
+                   echo "<br> countlab: " . $count_lab;
                    echo "<br> count div lab: " . $course_list_array[$x]->count_div_lab;
                  }
                    if ($course_list_array[$x]->count_div_lab > 0) {
                    for ($y = 1; $y <= $course_lab_count; $y++){?>
 
-                   <option value="<?php $lab = "LAB"; echo $course_list_array[$x]->id_course . "," . $lab . "," . rand(); ?>">
+                   <option value="<?php $lab = "LAB"; echo $course_list_array[$x]->id_course . "," . $lab; ?>">
 
                      <?php
                        echo "Lab Division " . $y . " ";
-                       echo " hours left: " . $lab_hours[$pieces[2]];
+                       echo " hours left: " . $lab_hours;
                        echo " ". $course_list_array[$x]->name . "<br>";
                        ?>
                        </option>
