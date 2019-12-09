@@ -187,7 +187,6 @@
       $courses_array = $json->data->courses;
       $courses_rows = $json->data->rows_returned;
 
-      echo "77" . $courses_array[77]->hours_lab;
 
 
       $body = $results['course']['value']->getBody();
@@ -195,36 +194,6 @@
       $json = json_decode($string);
       $course_list_array = $json->data->coursethisyears;
       $course_rows = $json->data->rows_returned;
-
-            //$course_lab_div = $json->data->coursethisyears->count_div_lab;
-
-      for($x=0 ; $x<$course_rows ; $x++){
-        $promises = [
-            'getdivision'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_course' => $course_list_array[$x]->id_course, 'id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => "A"]])
-            ];
-
-        // Wait on all of the requests to complete. Throws a ConnectException
-        // if any of the requests fail
-        $results = Promise\unwrap($promises);
-
-        // Wait for the requests to complete, even if some of them fail
-        $results = Promise\settle($promises)->wait();
-
-        $body = $results['getdivision']['value']->getBody();
-        $string = $body->getContents();
-        $json = json_decode($string);
-        $getdivision_array = $json->data->schedulers;
-        $getdivision_rows = $json->data->rows_returned;
-
-        echo "<br> getdivision_rows" . $getdivision_rows;
-
-
-      }
-
-      //print_r($scheduler_array);
-      //echo $scheduler_rows;
-
-
 
       for ($x = 0; $x < $room_avail_rows; $x++) {
         $promises = [
@@ -313,19 +282,9 @@
             <div class="form-group">
              <select multiple class="form-control tallform" id="exampleFormControlSelect2" name='id_course'>
                  <?php for ($x = 0; $x < $course_rows; $x++) {
-                   $course_lab_count = $course_list_array[$x]->count_div_lab;
-                   $count_lab = 1;
-                    $lab = "LAB";
 
                    if ($course_list_array[$x]->count_div_lab > 0) {
                    for ($y = 1; $y <= $course_list_array[$x]->count_div_lab; $y++){
-                     ?>
-
-                   <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course; ?>">
-
-
-
-                     <?php
 
                      $promises = [
                          'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course]])
@@ -352,73 +311,167 @@
 
                      $hoursleft = $lab_hours - $arranged;
 
-                     if($hoursleft == 0 ){
-                       echo "done" ;
-                     }
-                     else{
+                     if($hoursleft == 0 ){ ?>
+
+                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course; ?>" disabled>
+
+                         <?php
+
                        echo "Lab Division " . $y . " ";
                        echo " hours left: " . $hoursleft;
                        echo " ". $course_list_array[$x]->name . "<br>";
-                     }
-                       ?>
-                       </option>
+
+                         ?>
+                         </option>
+
+                         <?php
+                       }
+                     else{ ?>
+
+                     <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course; ?>">
+
                        <?php
-                     }
+
+                       echo "Lab Division " . $y . " ";
+                       echo " hours left: " . $hoursleft;
+                       echo " ". $course_list_array[$x]->name . "<br>";
+
+                         ?>
+                         </option>
+                         <?php }
+                      }
                    }
                    ?>
 
                    <?php
-                   $course_theory_count = $course_list_array[$x]->count_div_theory;
-                   $count_theory = 1;
+//######################################################################################
+                   //THEORY
+//######################################################################################
 
-                   for ($z = 0; $z < $getdivision_rows; $z++) {
-                     if($course_list_array[$x]->id_course === $getdivision_array[$z]->id_course){
-                       if ($getdivision_array[$z]->type_division === "THEORY"){
-                         $course_theory_count = $course_list_array[$x]->count_div_theory - $count_theory;
-                         $count_theory++;
-                       }
+                     if ($course_list_array[$x]->count_div_theory > 0) {
+                     for ($y = 1; $y <= $course_list_array[$x]->count_div_theory; $y++){
+
+                       $promises = [
+                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $y . "/" . "THEORY" . "/" . $course_list_array[$x]->id_course]])
+                           ];
+
+                       // Wait on all of the requests to complete. Throws a ConnectException
+                       // if any of the requests fail
+                       $results = Promise\unwrap($promises);
+
+                       // Wait for the requests to complete, even if some of them fail
+                       $results = Promise\settle($promises)->wait();
+
+                       $body = $results['getdiv']['value']->getBody();
+                       $string = $body->getContents();
+                       $json = json_decode($string);
+                       //$getdivision_array = $json->data->schedulers;
+                       $arranged = $json->data->rows_returned;
+
+                       for ($z = 0; $z < $courses_rows; $z++) {
+                         if($courses_array[$z]->course_id === $course_list_array[$x]->id_course){
+                           $theory_hours = $courses_array[$z]->hours_theory;
+                         }
+                         }
+
+                       $hoursleft = $theory_hours - $arranged;
+
+                       if($hoursleft == 0 ){ ?>
+
+                         <option value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "THEORY" . "/" . $course_list_array[$x]->id_course; ?>" disabled>
+
+                           <?php
+
+                         echo "Theory Division " . $y . " ";
+                         echo " hours left: " . $hoursleft;
+                         echo " ". $course_list_array[$x]->name . "<br>";
+
+                           ?>
+                           </option>
+
+                           <?php
+                         }
+                       else{ ?>
+
+                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "THEORY" . "/" . $course_list_array[$x]->id_course; ?>">
+
+                         <?php
+
+                         echo "Theory Division " . $y . " ";
+                         echo " hours left: " . $hoursleft;
+                         echo " ". $course_list_array[$x]->name . "<br>";
+
+                           ?>
+                           </option>
+                           <?php }
+                        }
                      }
-                   }
-                   if ($course_list_array[$x]->count_div_theory > 0) {
-                   for ($y = 1; $y <= $course_theory_count; $y++){?>
-
-                   <option value="<?php $theory = "THEORY"; echo $course_list_array[$x]->id_course . "," . $theory; ?>">
-
-                     <?php
-                       echo "Theory Division " . $y . " ";
-                       echo $course_list_array[$x]->name . "<br>";
-                       ?>
-                       </option>
-                       <?php
-                     }
-                   }
                    ?>
 
                    <?php
-                   $course_practice_count = $course_list_array[$x]->count_div_practice;
-                   $count_practice = 1;
+//######################################################################################
+                   //PRACTICE
+//######################################################################################
 
-                   for ($z = 0; $z < $getdivision_rows; $z++) {
-                     if($course_list_array[$x]->id_course === $getdivision_array[$z]->id_course){
-                       if ($getdivision_array[$z]->type_division === "PRACTICE"){
-                         $course_practice_count = $course_list_array[$x]->count_div_practice - $count_practice;
-                         $count_practice++;
-                       }
-                     }
-                   }
-                   if ($course_list_array[$x]->count_div_practice > 0) {
-                   for ($y = 1; $y <= $course_practice_count; $y++){?>
+                     if ($course_list_array[$x]->count_div_practice > 0) {
+                     for ($y = 1; $y <= $course_list_array[$x]->count_div_practice; $y++){
 
-                   <option value="<?php $practice = "PRACTICE"; echo $course_list_array[$x]->id_course . "," . $practice; ?>">
+                       $promises = [
+                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->id_course]])
+                           ];
 
-                     <?php
-                       echo "Practice Division " . $y . " ";
-                       echo $course_list_array[$x]->name . "<br>";
-                       ?>
-                       </option>
-                       <?php
-                     }
-                   }
+                       // Wait on all of the requests to complete. Throws a ConnectException
+                       // if any of the requests fail
+                       $results = Promise\unwrap($promises);
+
+                       // Wait for the requests to complete, even if some of them fail
+                       $results = Promise\settle($promises)->wait();
+
+                       $body = $results['getdiv']['value']->getBody();
+                       $string = $body->getContents();
+                       $json = json_decode($string);
+                       //$getdivision_array = $json->data->schedulers;
+                       $arranged = $json->data->rows_returned;
+
+                       for ($z = 0; $z < $courses_rows; $z++) {
+                         if($courses_array[$z]->course_id === $course_list_array[$x]->id_course){
+                           $practice_hours = $courses_array[$z]->hours_practice;
+                         }
+                         }
+
+                       $hoursleft = $practice_hours - $arranged;
+
+                       if($hoursleft == 0 ){ ?>
+
+                         <option value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->id_course; ?>" disabled>
+
+                           <?php
+
+                         echo "Practice Division " . $y . " ";
+                         echo " hours left: " . $hoursleft;
+                         echo " ". $course_list_array[$x]->name . "<br>";
+
+                           ?>
+                           </option>
+
+                           <?php
+                         }
+                       else{ ?>
+
+                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->id_course; ?>">
+
+                         <?php
+
+                         echo "Practice Division " . $y . " ";
+                         echo " hours left: " . $hoursleft;
+                         echo " ". $course_list_array[$x]->name . "<br>";
+
+                           ?>
+                           </option>
+                           <?php }
+                        }
+                      }
+
                    ?>
 
                <?php } ?>
