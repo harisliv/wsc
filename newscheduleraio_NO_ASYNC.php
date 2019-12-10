@@ -60,7 +60,31 @@
       //if(count($_POST['testtableradio'])<2){
       //  echo "ssssssssssssssssssssssssss";
       //}
-      $incre = 'a';
+      $promises = [
+          'getonediv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $pieces[2]]])
+          ];
+
+      // Wait on all of the requests to complete. Throws a ConnectException
+      // if any of the requests fail
+      $results = Promise\unwrap($promises);
+
+      // Wait for the requests to complete, even if some of them fail
+      $results = Promise\settle($promises)->wait();
+
+      $body = $results['getonediv']['value']->getBody();
+      $string = $body->getContents();
+      $json = json_decode($string);
+      //$getdivision_array = $json->data->schedulers;
+      $arranged_one = $json->data->rows_returned;
+
+      $checked_arr = $_POST['testtableradio'];
+      $count_checked = count($checked_arr);
+      //echo "hours left " . $pieces[3] . " / count checked " . $count_checked . " / arranged one " . $arranged_one . " / ";
+      if($pieces[3] - $arranged_one < $count_checked){
+        echo "FAILED";
+      }
+
+      else{
 
       foreach($_POST['testtableradio'] as $option_num => $option_val){
       //echo $option_num." ".$option_val."<br>";
@@ -125,6 +149,7 @@
         }
         }
       }
+    }
 
 
 
@@ -317,9 +342,8 @@
 
                          <?php
 
-                       echo "Lab Division " . $y . " ";
-                       echo " hours left: " . $hoursleft;
-                       echo " ". $course_list_array[$x]->name . "<br>";
+                         echo $y . ") Lab Division:";
+                         echo " ". $course_list_array[$x]->name . "<br>";
 
                          ?>
                          </option>
@@ -328,13 +352,14 @@
                        }
                      else{ ?>
 
-                     <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course; ?>">
+                     <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course . "," . $lab_hours; ?>">
 
                        <?php
 
-                       echo "Lab Division " . $y . " ";
-                       echo " hours left: " . $hoursleft;
-                       echo " ". $course_list_array[$x]->name . "<br>";
+                       echo $y . ") Lab Division";
+                       echo ": ". $course_list_array[$x]->name . " ";
+                       echo "(hours left: " . $hoursleft . ")<br>";
+
 
                          ?>
                          </option>
@@ -382,8 +407,7 @@
 
                            <?php
 
-                         echo "Theory Division " . $y . " ";
-                         echo " hours left: " . $hoursleft;
+                         echo $y . ") Theory Division:";
                          echo " ". $course_list_array[$x]->name . "<br>";
 
                            ?>
@@ -393,13 +417,13 @@
                          }
                        else{ ?>
 
-                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "THEORY" . "/" . $course_list_array[$x]->id_course; ?>">
+                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "THEORY" . "/" . $course_list_array[$x]->id_course . "," . $theory_hours; ?>">
 
                          <?php
 
-                         echo "Theory Division " . $y . " ";
-                         echo " hours left: " . $hoursleft;
-                         echo " ". $course_list_array[$x]->name . "<br>";
+                         echo $y . ") Theory Division";
+                         echo ": ". $course_list_array[$x]->name . " ";
+                         echo "(hours left: " . $hoursleft . ")<br>";
 
                            ?>
                            </option>
@@ -447,8 +471,7 @@
 
                            <?php
 
-                         echo "Practice Division " . $y . " ";
-                         echo " hours left: " . $hoursleft;
+                           echo $y . ") Practice Division:";
                          echo " ". $course_list_array[$x]->name . "<br>";
 
                            ?>
@@ -458,13 +481,13 @@
                          }
                        else{ ?>
 
-                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->id_course; ?>">
+                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->id_course . "," . $practice_hours; ?>">
 
                          <?php
 
-                         echo "Practice Division " . $y . " ";
-                         echo " hours left: " . $hoursleft;
-                         echo " ". $course_list_array[$x]->name . "<br>";
+                         echo $y . ") Practice Division";
+                         echo ": ". $course_list_array[$x]->name . " ";
+                         echo "(hours left: " . $hoursleft . ")<br>";
 
                            ?>
                            </option>
@@ -512,7 +535,7 @@
                 //echo $timeslot_array->data->timeslots[$x]->start_time . ":00";
                 //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array->data->timeslots[$x]->day);
                 ?><div class="form-check">
-                <input class="form-check-input" type="radio" name="testtableradio[<?php echo $x;?>]" value="<?php echo $room_avail_array[$x]->id; ?>" >
+                <input class="form-check-input" type="checkbox" name="testtableradio[<?php echo $x;?>]" value="<?php echo $room_avail_array[$x]->id; ?>" >
                 <?php echo $room_array[$x]->data->rooms[0]->lektiko_room; ?>
               </div>
                 <?php
@@ -533,19 +556,7 @@
 
         </tbody>
       </table>
-      <?php if($room_avail_rows > 0) {?>
-
-
-
-
-
-
-
-
-
-
-           <br><input type="submit" value="Submit">
-<?php } ?>
+      <?php if($room_avail_rows > 0) {?> <br><input type="submit" value="Submit"> <?php } ?>
 
           </form>
 
