@@ -540,7 +540,7 @@
               </div>
                 <?php
               }
-                elseif($timeslot_array_sch[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array_sch[$x]->data->timeslots[0]->day) {
+                if($timeslot_array_sch[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array_sch[$x]->data->timeslots[0]->day) {
                   //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
                   echo $room_array_sch[$x]->data->rooms[0]->lektiko_room . "<br>";
                   echo $course_array[$x]->data->coursethisyears[0]->name . "<br>";
