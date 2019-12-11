@@ -313,50 +313,67 @@
             <div class="form-group">
              <select multiple class="form-control tallform" id="exampleFormControlSelect2" name='id_course'>
                  <?php for ($x = 0; $x < $course_rows; $x++) {
-                   $course_lab_count = $course_list_array[$x]->count_div_lab;
-                   $count_lab = 1;
 
-                   for ($z = 0; $z < $courses_rows; $z++) {
-                     if($courses_array[$z]->course_id === $course_list_array[$x]->id_course){
-                       $lab_hours = $courses_array[$z]->hours_lab;
-                     }
-                     }
-
-
-
-
-                   for ($z = 0; $z < $getdivision_rows; $z++) {
-                     if($course_list_array[$x]->id_course === $getdivision_array[$z]->id_course){
-                       if ($getdivision_array[$z]->type_division === "LAB"){
-                         if ($lab_hours == $getdivision_rows){
-                         $course_lab_count = $course_list_array[$x]->count_div_lab - $count_lab;
-                         $count_lab++;
-
-                       }
-                       elseif ($lab_hours > $getdivision_rows){
-                         $lab_hours = $lab_hours - $getdivision_rows;
-
-                       }
-                     }
-                   }
-                   echo "<br> countlab: " . $count_lab;
-                   echo "<br> count div lab: " . $course_list_array[$x]->count_div_lab;
-                 }
                    if ($course_list_array[$x]->count_div_lab > 0) {
-                   for ($y = 1; $y <= $course_lab_count; $y++){?>
+                   for ($y = 1; $y <= $course_list_array[$x]->count_div_lab; $y++){
 
-                   <option value="<?php $lab = "LAB"; echo $course_list_array[$x]->id_course . "," . $lab; ?>">
+                     $promises = [
+                         'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course]])
+                         ];
 
-                     <?php
-                       echo "Lab Division " . $y . " ";
-                       echo " hours left: " . $lab_hours;
-                       echo " ". $course_list_array[$x]->name . "<br>";
-                       ?>
-                       </option>
+                     // Wait on all of the requests to complete. Throws a ConnectException
+                     // if any of the requests fail
+                     $results = Promise\unwrap($promises);
+
+                     // Wait for the requests to complete, even if some of them fail
+                     $results = Promise\settle($promises)->wait();
+
+                     $body = $results['getdiv']['value']->getBody();
+                     $string = $body->getContents();
+                     $json = json_decode($string);
+                     //$getdivision_array = $json->data->schedulers;
+                     $arranged = $json->data->rows_returned;
+
+                     for ($z = 0; $z < $courses_rows; $z++) {
+                       if($courses_array[$z]->course_id === $course_list_array[$x]->id_course){
+                         $lab_hours = $courses_array[$z]->hours_lab;
+                       }
+                       }
+
+                     $hoursleft = $lab_hours - $arranged;
+
+                     if($hoursleft == 0 ){ ?>
+
+                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course; ?>" disabled>
+
+                         <?php
+
+                         echo $y . ") Lab Division:";
+                         echo " ". $course_list_array[$x]->name . "<br>";
+
+                         ?>
+                         </option>
+
+                         <?php
+                       }
+                     else{ ?>
+
+                     <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->id_course . "," . $lab_hours; ?>">
+
                        <?php
-                     }
+
+                       echo $y . ") Lab Division";
+                       echo ": ". $course_list_array[$x]->name . " ";
+                       echo "(hours left: " . $hoursleft . ")<br>";
+
+
+                         ?>
+                         </option>
+                         <?php }
+                      }
                    }
                    ?>
+
 
                    <?php
                    $course_theory_count = $course_list_array[$x]->count_div_theory;

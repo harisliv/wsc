@@ -120,9 +120,8 @@
       $postedid = $json->data->schedulers[0]->id_course;
       $postedtype = $json->data->schedulers[0]->type_division;
       //echo "skereeeeeeeeeeeeeeeeeeeeeeeeeeeeee" . $postedid;
-      $incre++;
 
-        if($type_division === "theory"){
+        if($pieces[1] === "THEORY"){
 
           $res = $client->request('PATCH', 'room_avail.php',
           [
@@ -534,7 +533,7 @@
               if($timeslot_array[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day) {
                 //echo $timeslot_array->data->timeslots[$x]->start_time . ":00";
                 //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array->data->timeslots[$x]->day);
-                ?><div class="form-check">
+                ?><div class="form-check harisformcheck">
                 <input class="form-check-input" type="checkbox" name="testtableradio[<?php echo $x;?>]" value="<?php echo $room_avail_array[$x]->id; ?>" >
                 <?php echo $room_array[$x]->data->rooms[0]->lektiko_room; ?>
               </div>
@@ -542,11 +541,53 @@
               }
                 if($timeslot_array_sch[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array_sch[$x]->data->timeslots[0]->day) {
                   //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
-                  echo $room_array_sch[$x]->data->rooms[0]->id . ") ";
+
+                  //$res = $client->request('GET', 'http://localhost/shedulerapi/room_avail',
+                  //[
+                  //  'headers' => ['Authorization' => $_SESSION["authtoken"]],
+                  //  'query' =>
+                  //  [
+                  //    'day' => $timeslot_array_sch[$x]->data->timeslots[0]->day,
+                  //    'start_time' => $timeslot_array_sch[$x]->data->timeslots[0]->start_time,
+                  //    'room_code' => $room_array_sch[$x]->data->rooms[0]->room_code,
+                  //    'id_acadsem' => $_SESSION["id_acadsem"]
+                  //    ]
+                  //  ]);
+
+                    $promises = [
+                        'delroomavail'  => $client->getAsync('room_avail.php', [
+                          'headers' => ['Authorization' => $_SESSION["authtoken"]],
+                          'query' =>
+                          [
+                            'day' => $timeslot_array_sch[$x]->data->timeslots[0]->day,
+                            'start_time' => $timeslot_array_sch[$x]->data->timeslots[0]->start_time,
+                            'room_code' => $room_array_sch[$x]->data->rooms[0]->room_code,
+                            'id_acadsem' => $_SESSION["id_acadsem"]
+                            ]
+                          ])
+                        ];
+
+                    // Wait on all of the requests to complete. Throws a ConnectException
+                    // if any of the requests fail
+                    $results = Promise\unwrap($promises);
+
+                    // Wait for the requests to complete, even if some of them fail
+                    $results = Promise\settle($promises)->wait();
+
+                    $body = $results['delroomavail']['value']->getBody();
+                    $string = $body->getContents();
+                    $json = json_decode($string);
+
+                  $room_avail_id = $json->data->rooms_avail[0]->id;
+
+
+
+                  //echo "<div class='arranged'>" . $room_avail_id . ") ";
+                  echo "<div class='arranged'>" . $room_avail_id . ") ";
                   echo $room_array_sch[$x]->data->rooms[0]->lektiko_room . "<br>";
                   echo $course_array[$x]->data->coursethisyears[0]->name . "<br>";
                   echo $scheduler_array[$x]->type_division . "<br>";
-                  echo $scheduler_array[$x]->division_str . "<br>";
+                  echo $scheduler_array[$x]->division_str . "</div> <br>";
                 }
             }
             ?>

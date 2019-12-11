@@ -124,6 +124,22 @@ function headernav()
 
 }
 
+.arranged {
+    border: 2px solid green;
+    border-radius: 25px;
+    background-color: aquamarine;
+    padding-left: 22px;
+}
+
+.form-check.harisformcheck {
+    border: 2px solid red;
+    padding-left: 2.25rem;
+    border-radius: 25px;
+
+    background-color: indianred;
+    margin: 5px;
+}
+
   </style>
 
 </head>
