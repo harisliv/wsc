@@ -579,11 +579,18 @@
                     $json = json_decode($string);
 
                   $room_avail_id = $json->data->rooms_avail[0]->id;
+?>
+                  <div class="form-check arranged">
+                  <input class="form-check-input" type="radio" name="<?php echo $room_avail_id . "," . $room_array_sch[$x]->data->rooms[0]->id . "," . $timeslot_array_sch[$x]->data->timeslots[0]->id;?>"
+                  value="<?php echo $room_avail_id . "," . $room_array_sch[$x]->data->rooms[0]->id . "," . $timeslot_array_sch[$x]->data->timeslots[0]->id;?>" >
+                </div>
 
+<?php
 
 
                   //echo "<div class='arranged'>" . $room_avail_id . ") ";
                   echo "<div class='arranged'>" . $room_avail_id . ") ";
+                  echo "[tsid:" . $timeslot_array_sch[$x]->data->timeslots[0]->id . " roomid:" . $room_array_sch[$x]->data->rooms[0]->id . "]<br>";
                   echo $room_array_sch[$x]->data->rooms[0]->lektiko_room . "<br>";
                   echo $course_array[$x]->data->coursethisyears[0]->name . "<br>";
                   echo $scheduler_array[$x]->type_division . "<br>";
