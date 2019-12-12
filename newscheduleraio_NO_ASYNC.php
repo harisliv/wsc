@@ -39,6 +39,42 @@
 
       headernav();
 
+      if (isset($_POST['delete']) && isset($_POST['testtableradio'])){
+        echo "skata";
+      }
+
+      else{
+
+
+      if (isset($_POST['delete'])) {
+        foreach($_POST['delete'] as $del_num => $del_val){
+
+        $pieces_delete = explode(",", $del_val);
+        print_r($pieces_delete);
+
+        $res = $client->request('PATCH', 'room_avail.php',
+      [
+        'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' => ['id' => $pieces_delete[0]],
+        'json' =>  ['available' => 'Y']
+      ]
+      );
+
+      $res = $client->request('DELETE', 'scheduler.php',
+    [
+      'headers' => ['Authorization' => $_SESSION["authtoken"]],
+      'query' => ['id_room' => $pieces_delete[1], 'id_ts' => $pieces_delete[2], 'id_acadsem' => $_SESSION["id_acadsem"]]
+    ]
+    );
+
+      $json = json_decode($res->getBody()->getContents());
+
+    }
+        }
+        if (isset($_POST['testtableradio'])) {
+
+
+
       $nameid = $_POST['id_course'];
       $pieces = explode(",", $nameid);
 
@@ -80,6 +116,10 @@
       $checked_arr = $_POST['testtableradio'];
       $count_checked = count($checked_arr);
       //echo "hours left " . $pieces[3] . " / count checked " . $count_checked . " / arranged one " . $arranged_one . " / ";
+
+
+
+
       if($pieces[3] - $arranged_one < $count_checked){
         echo "FAILED";
       }
@@ -149,7 +189,9 @@
         }
       }
     }
+}
 
+}
 
 
       $weekdb = array("de", "tr", "te", "pe", "pa");
@@ -580,8 +622,8 @@
 
                   $room_avail_id = $json->data->rooms_avail[0]->id;
 ?>
-                  <div class="form-check arranged">
-                  <input class="form-check-input" type="radio" name="<?php echo $room_avail_id . "," . $room_array_sch[$x]->data->rooms[0]->id . "," . $timeslot_array_sch[$x]->data->timeslots[0]->id;?>"
+                  <div class="form-check">
+                  <input class="form-check-input arranged" type="checkbox" name="delete[<?php echo $x;?>]"
                   value="<?php echo $room_avail_id . "," . $room_array_sch[$x]->data->rooms[0]->id . "," . $timeslot_array_sch[$x]->data->timeslots[0]->id;?>" >
                 </div>
 
@@ -590,7 +632,8 @@
 
                   //echo "<div class='arranged'>" . $room_avail_id . ") ";
                   echo "<div class='arranged'>" . $room_avail_id . ") ";
-                  echo "[tsid:" . $timeslot_array_sch[$x]->data->timeslots[0]->id . " roomid:" . $room_array_sch[$x]->data->rooms[0]->id . "]<br>";
+                  echo " [roomid:" . $room_array_sch[$x]->data->rooms[0]->id;
+                  echo " tsid:" . $timeslot_array_sch[$x]->data->timeslots[0]->id . "]<br>";
                   echo $room_array_sch[$x]->data->rooms[0]->lektiko_room . "<br>";
                   echo $course_array[$x]->data->coursethisyears[0]->name . "<br>";
                   echo $scheduler_array[$x]->type_division . "<br>";
