@@ -18,11 +18,41 @@
   $client = new GuzzleHttp\Client();
 
   try {
-    for ($x = 0; $x <= 4; $x++) {
+?>
+    <table class="table table-bordered">
+      <thead>
+        <th> </th>
+         <?php for ($y = 0; $y <= 4; $y++) { ?>
+        <th>
+          <?php echo $weekgk[$y]; ?>
+        </th>
+        <?php } ?>
+      </thead>
+      <tbody>
 
-    for ($st = 1 + $x*13 ; $st <= 13 + $x*13 ; $st++) {
+        <?php for ($x = 0; $x <= 4; $x++) {
 
-    for ($y = 1; $y <= 9; $y++) {
+
+
+          ?>
+          <?php for ($st = 1 + $x*13 ; $st <= 13 + $x*13 ; $st++) { ?>
+
+        <tr>
+
+          <td><?php echo $st; ?></td>
+          <?php for ($y = 0; $y <= 4; $y++) {
+             for ($y = 1; $y <= 9; $y++) {
+            ?>
+          <td>
+
+          </td>
+        <?php } } ?>
+        </tr>
+      <?php } }?>
+
+      </tbody>
+    </table>
+    <?php
 
   $res = $client->request('POST', 'http://localhost/shedulerapi/controller/room_avail.php' ,
   [
@@ -50,8 +80,9 @@
 
   }
 }
-}
-}
+
+
+
 
   catch (GuzzleHttp\Exception\BadResponseException $e) {
       $response = $e->getResponse();

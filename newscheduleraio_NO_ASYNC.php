@@ -40,7 +40,10 @@
       headernav();
 
       if (isset($_POST['delete']) && isset($_POST['testtableradio'])){
-        echo "skata";
+        ?><div class="alert alert-danger" role="alert"><?php
+        echo "ΔΕΝ ΓΊΝΕΤΑΙ ΝΑ ΔΙΑΓΡΑΨΕΤΕ ΚΑΙ ΝΑ ΚΛΕΙΣΕΤΕ ΜΑΘΗΜΑ ΤΑΥΤΟΧΡΟΝΑ";
+        ?></div><?php
+
       }
 
       else{
@@ -51,6 +54,25 @@
 
         $pieces_delete = explode(",", $del_val);
         print_r($pieces_delete);
+
+        if ($pieces_delete[3] == "THEORY"){
+
+          $res = $client->request('PATCH', 'room_avail.php',
+        [
+          'headers' => ['Authorization' => $_SESSION["authtoken"]],
+          'query' => ['id_ts' => $pieces_delete[2]],
+          'json' =>  ['available' => 'Y']
+        ]
+        );
+
+        $res = $client->request('DELETE', 'scheduler.php',
+      [
+        'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' => ['id_room' => $pieces_delete[1], 'id_ts' => $pieces_delete[2], 'id_acadsem' => $_SESSION["id_acadsem"]]
+      ]
+      );
+
+    }else{
 
         $res = $client->request('PATCH', 'room_avail.php',
       [
@@ -70,6 +92,7 @@
       $json = json_decode($res->getBody()->getContents());
 
     }
+  }
         }
         if (isset($_POST['testtableradio'])) {
 
@@ -121,7 +144,10 @@
 
 
       if($pieces[3] - $arranged_one < $count_checked){
-        echo "FAILED";
+        ?><div class="alert alert-danger" role="alert"><?php
+        echo "ΕΧΕΤΕ ΕΠΙΛΕΞΕΙ ΠΕΡΙΣΣΟΤΕΡΕΣ ΩΡΕΣ ΑΠΟ ΑΥΤΕΣ ΠΟΥ ΕΙΝΑΙ ΔΙΑΘΕΣΙΜΕΣ";
+        ?></div><?php
+
       }
 
       else{
@@ -138,30 +164,16 @@
       $room_id = $room_avail_array[0]->id_room;
       $ts_id = $room_avail_array[0]->id_ts;
 
-      $res = $client->request('POST', 'scheduler.php',
-      ['headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'json' =>
-      [
-      'id_course' => $pieces[0],
-      'id_acadsem' => $_SESSION["id_acadsem"],
-      'type_division' => $pieces[1],
-      'lektiko_division' => "tha doume pws",
-      'id_prof' => $id_prof,
-      'id_room' => $room_id,
-      'id_ts' => $ts_id,
-      'division_str' => $pieces[2],
-      'learn_sem' => $_SESSION["learn_sem"]
-      ]
-      ]);
-
-      $body = $res->getBody();
-      $string = $body->getContents();
-      $json = json_decode($string);
-      $postedid = $json->data->schedulers[0]->id_course;
-      $postedtype = $json->data->schedulers[0]->type_division;
-      //echo "skereeeeeeeeeeeeeeeeeeeeeeeeeeeeee" . $postedid;
-
         if($pieces[1] === "THEORY"){
+
+        $res = $client->request('DELETE', 'scheduler.php',
+      [
+        'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' => ['id_ts' => $ts_id, 'id_acadsem' => $_SESSION["id_acadsem"]]
+      ]
+      );
+
+        $json = json_decode($res->getBody()->getContents());
 
           $res = $client->request('PATCH', 'room_avail.php',
           [
@@ -186,6 +198,29 @@
         $json = json_decode($res->getBody()->getContents());
 
         }
+
+      $res = $client->request('POST', 'scheduler.php',
+      ['headers' => ['Authorization' => $_SESSION["authtoken"]],
+      'json' =>
+      [
+      'id_course' => $pieces[0],
+      'id_acadsem' => $_SESSION["id_acadsem"],
+      'type_division' => $pieces[1],
+      'lektiko_division' => "tha doume pws",
+      'id_prof' => $id_prof,
+      'id_room' => $room_id,
+      'id_ts' => $ts_id,
+      'division_str' => $pieces[2],
+      'learn_sem' => $_SESSION["learn_sem"]
+      ]
+      ]);
+
+      $body = $res->getBody();
+      $string = $body->getContents();
+      $json = json_decode($string);
+      $postedid = $json->data->schedulers[0]->id_course;
+      $postedtype = $json->data->schedulers[0]->type_division;
+      //echo "skereeeeeeeeeeeeeeeeeeeeeeeeeeeeee" . $postedid;
         }
       }
     }
@@ -562,19 +597,14 @@
         </thead>
         <tbody>
 
-          <?php for ($st = 8; $st < 11; $st++) { ?>
+          <?php for ($st = 8; $st < 21; $st++) { ?>
           <tr>
             <td><?php echo $st; ?></td>
             <?php for ($y = 0; $y <= 4; $y++) { ?>
             <td><?php for ($x = 0; $x < $loop; $x++) {
-              //echo "==========<br>";
-              //echo "<br>str" . $x . ": ". $scheduler_array[$x]->division_str . "<br>";
-              //echo "start time: " . $timeslot_array_sch[$x]->data->timeslots[0]->start_time . "<->" . $st . "<br>";
-              //echo "week day: " . $timeslot_array[$x]->data->timeslots[0]->day . "<->" . $weekdb[$y] . "<br>";
-              //echo "==========";
+
               if($timeslot_array[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day) {
-                //echo $timeslot_array->data->timeslots[$x]->start_time . ":00";
-                //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array->data->timeslots[$x]->day);
+                
                 ?><div class="form-check harisformcheck">
                 <input class="form-check-input" type="checkbox" name="testtableradio[<?php echo $x;?>]" value="<?php echo $room_avail_array[$x]->id; ?>" >
                 <?php echo $room_array[$x]->data->rooms[0]->lektiko_room; ?>
@@ -582,19 +612,7 @@
                 <?php
               }
                 if($timeslot_array_sch[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array_sch[$x]->data->timeslots[0]->day) {
-                  //echo str_replace($weekdb[$y], $weekgk[$y], $timeslot_array[$x]->data->timeslots[0]->day);
 
-                  //$res = $client->request('GET', 'http://localhost/shedulerapi/room_avail',
-                  //[
-                  //  'headers' => ['Authorization' => $_SESSION["authtoken"]],
-                  //  'query' =>
-                  //  [
-                  //    'day' => $timeslot_array_sch[$x]->data->timeslots[0]->day,
-                  //    'start_time' => $timeslot_array_sch[$x]->data->timeslots[0]->start_time,
-                  //    'room_code' => $room_array_sch[$x]->data->rooms[0]->room_code,
-                  //    'id_acadsem' => $_SESSION["id_acadsem"]
-                  //    ]
-                  //  ]);
 
                     $promises = [
                         'delroomavail'  => $client->getAsync('room_avail.php', [
@@ -624,7 +642,7 @@
 ?>
                   <div class="form-check">
                   <input class="form-check-input arranged" type="checkbox" name="delete[<?php echo $x;?>]"
-                  value="<?php echo $room_avail_id . "," . $room_array_sch[$x]->data->rooms[0]->id . "," . $timeslot_array_sch[$x]->data->timeslots[0]->id;?>" >
+                  value="<?php echo $room_avail_id . "," . $room_array_sch[$x]->data->rooms[0]->id . "," . $timeslot_array_sch[$x]->data->timeslots[0]->id . "," . $scheduler_array[$x]->type_division;?>" >
                 </div>
 
 <?php
