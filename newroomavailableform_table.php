@@ -24,7 +24,7 @@
         <th> </th>
          <?php for ($y = 0; $y <= 4; $y++) { ?>
         <th>
-          <?php echo $weekgk[$y]; ?>
+          <?php echo $y; ?>
         </th>
         <?php } ?>
       </thead>
@@ -39,7 +39,7 @@
 
         <tr>
 
-          <td><?php echo $st; ?></td>
+          <td><?php echo 8++; ?></td>
           <?php for ($y = 0; $y <= 4; $y++) {
              for ($y = 1; $y <= 9; $y++) {
             ?>
