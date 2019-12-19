@@ -53,31 +53,58 @@
         foreach($_POST['delete'] as $del_num => $del_val){
 
         $pieces_delete = explode(",", $del_val);
-        print_r($pieces_delete);
+        //print_r($pieces_delete);
 
-        if ($pieces_delete[3] == "THEORY"){
+        $res = $client->request('GET', 'room_avail.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => [
+          'id_room' => $pieces_delete[0],
+          'id_ts' => $pieces_delete[1],
+          'id_acadsem' => $_SESSION["id_acadsem"],
+          'learn_sem' => $_SESSION["learn_sem"]
+          ]]);
+
+        $json = json_decode($res->getBody()->getContents());
+
+        $room_avail_del_id = $json->data->rooms_avail[0]->id;
+
+        if ($pieces_delete[2] == "THEORY"){
 
           $res = $client->request('PATCH', 'room_avail.php',
         [
           'headers' => ['Authorization' => $_SESSION["authtoken"]],
-          'query' => ['id_ts' => $pieces_delete[2]],
+          'query' => ['id_ts' => $pieces_delete[1]],
           'json' =>  ['available' => 'Y']
         ]
         );
 
-        $res = $client->request('DELETE', 'scheduler.php',
+        $res = $client->request('GET', 'scheduler.php',
       [
         'headers' => ['Authorization' => $_SESSION["authtoken"]],
-        'query' => ['id_room' => $pieces_delete[1], 'id_ts' => $pieces_delete[2], 'id_acadsem' => $_SESSION["id_acadsem"]]
+        'query' => ['id_ts' => $pieces_delete[1], 'id_acadsem' => $_SESSION["id_acadsem"]]
       ]
       );
 
-    }else{
+      $json = json_decode($res->getBody()->getContents());
+      $scheduler_rows_del = $json->data->rows_returned;
+
+      echo "rows" . $scheduler_rows_del;
+
+      if($scheduler_rows_del > 0){
+
+      $res = $client->request('DELETE', 'scheduler.php',
+    [
+      'headers' => ['Authorization' => $_SESSION["authtoken"]],
+      'query' => ['id_ts' => $pieces_delete[1], 'id_acadsem' => $_SESSION["id_acadsem"]]
+    ]
+    );
+    }
+
+    }
+    else{
 
         $res = $client->request('PATCH', 'room_avail.php',
       [
         'headers' => ['Authorization' => $_SESSION["authtoken"]],
-        'query' => ['id' => $pieces_delete[0]],
+        'query' => ['id' => $room_avail_del_id],
         'json' =>  ['available' => 'Y']
       ]
       );
@@ -85,7 +112,7 @@
       $res = $client->request('DELETE', 'scheduler.php',
     [
       'headers' => ['Authorization' => $_SESSION["authtoken"]],
-      'query' => ['id_room' => $pieces_delete[1], 'id_ts' => $pieces_delete[2], 'id_acadsem' => $_SESSION["id_acadsem"]]
+      'query' => ['id_room' => $pieces_delete[0], 'id_ts' => $pieces_delete[1], 'id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]
     ]
     );
 
@@ -100,6 +127,7 @@
 
       $nameid = $_POST['id_course'];
       $pieces = explode(",", $nameid);
+
 
       if(!empty($_POST['id_room_avail']) || !empty($_POST['id_course']) || !empty($_POST['type_division']) || !empty($_POST['id_prof'])){
 
@@ -154,17 +182,38 @@
 
       foreach($_POST['testtableradio'] as $option_num => $option_val){
       //echo $option_num." ".$option_val."<br>";
-      $room_avail_header = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'id' => $option_val ]];
+      //$room_avail_header = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'id' => $option_val ]];
+      $pieces_room_avail = explode(",", $option_val);
 
 
-      $res = $client->request('GET', 'room_avail.php', $room_avail_header);
+      $res = $client->request('GET', 'room_avail.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => [
+        'id_room' => $pieces_room_avail[0],
+        'id_ts' => $pieces_room_avail[1],
+        'id_acadsem' => $_SESSION["id_acadsem"],
+        'learn_sem' => $_SESSION["learn_sem"] ]]);
+
       $json = json_decode($res->getBody()->getContents());
       $room_avail_array = $json->data->rooms_avail;
       $room_avail_rows = $json->data->rows_returned;
       $room_id = $room_avail_array[0]->id_room;
+      $room_avail_id = $room_avail_array[0]->id;
       $ts_id = $room_avail_array[0]->id_ts;
 
         if($pieces[1] === "THEORY"){
+
+          $res = $client->request('GET', 'scheduler.php',
+        [
+          'headers' => ['Authorization' => $_SESSION["authtoken"]],
+          'query' => ['id_ts' => $ts_id, 'id_acadsem' => $_SESSION["id_acadsem"]]
+        ]
+        );
+
+        $json = json_decode($res->getBody()->getContents());
+        $scheduler_rows_del = $json->data->rows_returned;
+
+        //echo "rows" . $scheduler_rows_del;
+
+        if($scheduler_rows_del > 0){
 
         $res = $client->request('DELETE', 'scheduler.php',
       [
@@ -174,7 +223,7 @@
       );
 
         $json = json_decode($res->getBody()->getContents());
-
+}
           $res = $client->request('PATCH', 'room_avail.php',
           [
             'headers' => ['Authorization' => $_SESSION["authtoken"]],
@@ -191,7 +240,7 @@
           $res = $client->request('PATCH', 'room_avail.php',
         [
           'headers' => ['Authorization' => $_SESSION["authtoken"]],
-          'query' => ['id' => $option_val],
+          'query' => ['id' => $room_avail_id],
           'json' =>  ['available' => 'N']
         ]
         );
@@ -237,11 +286,11 @@
 
       // Initiate each request but do not block
       $promises = [
-          'course' => $client->getAsync('course_this_year.php',['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['learn_sem' => $_SESSION["learn_sem"], 'acad_sem' => $_SESSION["id_acadsem"]]]),
-          'room_avail'  => $client->getAsync('room_avail.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'available' => 'Y', 'learn_sem' => $_SESSION["learn_sem"]]]),
+          'course' => $client->getAsync('course_this_year.php',['headers' => $header_authtoken,'query' => ['learn_sem' => $_SESSION["learn_sem"], 'acad_sem' => $_SESSION["id_acadsem"]]]),
+          'room_avail'  => $client->getAsync('room_avail.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]]),
           'scheduler'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]]),
           'course_list'  => $client->getAsync('course.php', $header),
-
+          'room_list'   => $client->getAsync('room.php', $header),
           'professor'  => $client->getAsync('professor.php', $header)
       ];
 
@@ -260,21 +309,12 @@
       $json = json_decode($string);
       $room_avail_array = $json->data->rooms_avail;
       $room_avail_rows = $json->data->rows_returned;
-      //echo "<br> id room: " . $room_avail_array[0]->id_room;
-
-      //print_r($room_avail_array);
-      //echo $room_avail_rows;
-      //echo $json->data->rows_returned;
-
-      //print_r(json_decode($results['scheduler']['value']->getBody(), true));
-
 
       $body = $results['scheduler']['value']->getBody();
       $string = $body->getContents();
       $json = json_decode($string);
       $scheduler_array = $json->data->schedulers;
       $scheduler_rows = $json->data->rows_returned;
-      $scheduler_type = $scheduler_array[0]->type_division;
 
       $body = $results['professor']['value']->getBody();
       $string = $body->getContents();
@@ -288,7 +328,11 @@
       $courses_array = $json->data->courses;
       $courses_rows = $json->data->rows_returned;
 
-
+      $body = $results['room_list']['value']->getBody();
+      $string = $body->getContents();
+      $json = json_decode($string);
+      $room_list_array = $json->data->rooms;
+      $room_list_rows = $json->data->rows_returned;
 
       $body = $results['course']['value']->getBody();
       $string = $body->getContents();
@@ -296,73 +340,10 @@
       $course_list_array = $json->data->coursethisyears;
       $course_rows = $json->data->rows_returned;
 
-      for ($x = 0; $x < $room_avail_rows; $x++) {
-        $promises = [
-            'room_1'   => $client->getAsync('room.php', ['headers' => $header_authtoken,'query' => ['id' => $room_avail_array[$x]->id_room ]]),
-            'timeslot_1'  => $client->getAsync('timeslot.php', ['headers' => $header_authtoken  ,'query' =>['id'=>$room_avail_array[$x]->id_ts ]])
-        ];
-
-        $results = Promise\unwrap($promises);
-
-        // Wait for the requests to complete, even if some of them fail
-        $results = Promise\settle($promises)->wait();
-
-
-        $body = $results['room_1']['value']->getBody();
-        $string = $body->getContents();
-        $room_array[$x] = json_decode($string);
-        //print_r($room_array);
-
-        $body = $results['timeslot_1']['value']->getBody();
-        $string = $body->getContents();
-        $timeslot_array[$x] = json_decode($string);
-      }
-
-
-      for ($x = 0; $x < $scheduler_rows; $x++) {
-        $promises = [
-            'room_2'   => $client->getAsync('room.php', ['headers' => $header_authtoken,'query' => ['id' => $scheduler_array[$x]->id_room ]]),
-            'timeslot_2'  => $client->getAsync('timeslot.php', ['headers' => $header_authtoken,'query' =>['id'=>$scheduler_array[$x]->id_ts ]]),
-            'course_2'  => $client->getAsync('course_this_year.php', ['headers' => $header_authtoken,'query' => ['id_course' => $scheduler_array[$x]->id_course]])
-        ];
-
-        $results = Promise\unwrap($promises);
-
-        // Wait for the requests to complete, even if some of them fail
-        $results = Promise\settle($promises)->wait();
-
-        // You can access each result using the key provided to the unwrap
-        // function.
-
-
-        $body = $results['room_2']['value']->getBody();
-        $string = $body->getContents();
-        $room_array_sch[$x] = json_decode($string);
-        //print_r($room_array_sch);
-
-        $body = $results['timeslot_2']['value']->getBody();
-        $string = $body->getContents();
-        $timeslot_array_sch[$x] = json_decode($string);
-        //print_r($timeslot_array_sch);
-
-        $body = $results['course_2']['value']->getBody();
-        $string = $body->getContents();
-        $course_array[$x] = json_decode($string);
-
-      }
-
-      if($scheduler_rows > $room_avail_rows){
-        $loop = $scheduler_rows;
-      }
-      else {
-        $loop = $room_avail_rows;
-      }
-      //echo "course rows" . $courses_rows;
-      //echo "ela" . $courses_array[77]->course_id;
 
       ?>
 
-      <form action="newscheduleraio_NO_ASYNC.php" method="post">
+      <form action="newscheduleraio_NO_ASYNC_v2.php" method="post">
 
 
       <div class="sidenav">
@@ -418,8 +399,8 @@
 
                          <?php
 
-                         echo $y . ") Lab Division:";
-                         echo " ". $course_list_array[$x]->name . "<br>";
+                         //echo $y . ") Lab Division:";
+                         echo " ". $course_list_array[$x]->name . " [ΕΡΓ. " . $y . "]<br>";
 
                          ?>
                          </option>
@@ -597,68 +578,57 @@
         </thead>
         <tbody>
 
-          <?php for ($st = 8; $st < 21; $st++) { ?>
+          <?php for ($st = 1 ; $st <= 13 ; $st++) { ?>
           <tr>
-            <td><?php echo $st; ?></td>
-            <?php for ($y = 0; $y <= 4; $y++) { ?>
-            <td><?php for ($x = 0; $x < $loop; $x++) {
+            <td><?php $time = $st + 7; echo $time; ?></td>
+            <?php for ($x = 0; $x <= 4; $x++) { ?>
+            <td>
 
-              if($timeslot_array[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array[$x]->data->timeslots[0]->day) {
+              <?php
+              $id_ts = $st + $x * 13;
+              echo "id_ts:" . $id_ts . "<br>";
+              for ($y = 0; $y < $room_list_rows; $y++) {
 
-                ?><div class="form-check harisformcheck">
-                <input class="form-check-input" type="checkbox" name="testtableradio[<?php echo $x;?>]" value="<?php echo $room_avail_array[$x]->id; ?>" >
-                <?php echo $room_array[$x]->data->rooms[0]->lektiko_room; ?>
-              </div>
-                <?php
-              }
-                if($timeslot_array_sch[$x]->data->timeslots[0]->start_time == $st && $weekdb[$y] === $timeslot_array_sch[$x]->data->timeslots[0]->day) {
-
-
-                    $promises = [
-                        'delroomavail'  => $client->getAsync('room_avail.php', [
-                          'headers' => ['Authorization' => $_SESSION["authtoken"]],
-                          'query' =>
-                          [
-                            'day' => $timeslot_array_sch[$x]->data->timeslots[0]->day,
-                            'start_time' => $timeslot_array_sch[$x]->data->timeslots[0]->start_time,
-                            'room_code' => $room_array_sch[$x]->data->rooms[0]->room_code,
-                            'id_acadsem' => $_SESSION["id_acadsem"]
-                            ]
-                          ])
-                        ];
-
-                    // Wait on all of the requests to complete. Throws a ConnectException
-                    // if any of the requests fail
-                    $results = Promise\unwrap($promises);
-
-                    // Wait for the requests to complete, even if some of them fail
-                    $results = Promise\settle($promises)->wait();
-
-                    $body = $results['delroomavail']['value']->getBody();
-                    $string = $body->getContents();
-                    $json = json_decode($string);
-
-                  $room_avail_id = $json->data->rooms_avail[0]->id;
-?>
+                for ($z = 0; $z < $room_avail_rows; $z++) {
+                  $id_room = $y+1;
+                  if($room_avail_array[$z]->id_ts == $id_ts && $room_avail_array[$z]->id_room == $id_room && $room_avail_array[$z]->available == "N"){
+                    //echo $room_avail_array[$z]->id_ts . " " . $room_avail_array[$z]->id_room . ") ";
+                    $res = $client->request('GET', 'scheduler.php',
+                  [
+                    'headers' => ['Authorization' => $_SESSION["authtoken"]],
+                    'query' => ['id_room' => $id_room, 'id_ts' => $id_ts, 'id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]
+                  ]
+                  );
+                  $json = json_decode($res->getBody()->getContents());
+                  $scheduled = $json->data->schedulers;
+                  $scheduled_rows = $json->data->rows_returned;
+                  if($scheduled_rows > 0){
+                  ?>
                   <div class="form-check">
-                  <input class="form-check-input arranged" type="checkbox" name="delete[<?php echo $x;?>]"
-                  value="<?php echo $room_avail_id . "," . $room_array_sch[$x]->data->rooms[0]->id . "," . $timeslot_array_sch[$x]->data->timeslots[0]->id . "," . $scheduler_array[$x]->type_division;?>" >
+                  <input class="form-check-input arranged" type="checkbox" name="delete[<?php echo $id_room . "" . $id_ts;?>]"
+                  value="<?php echo $id_room . "," . $id_ts . "," . $scheduled[0]->type_division;?>" >
                 </div>
-
-<?php
-
-
-                  //echo "<div class='arranged'>" . $room_avail_id . ") ";
-                  echo "<div class='arranged'>" . $room_avail_id . ") ";
-                  echo " [roomid:" . $room_array_sch[$x]->data->rooms[0]->id;
-                  echo " tsid:" . $timeslot_array_sch[$x]->data->timeslots[0]->id . "]<br>";
-                  echo $room_array_sch[$x]->data->rooms[0]->lektiko_room . "<br>";
-                  echo $course_array[$x]->data->coursethisyears[0]->name . "<br>";
-                  echo $scheduler_array[$x]->type_division . "<br>";
-                  echo $scheduler_array[$x]->division_str . "</div> <br>";
+                  <?php
+                  echo $scheduled[0]->division_str . "<br>";
                 }
-            }
-            ?>
+                  }
+
+                  if($room_avail_array[$z]->id_ts == $id_ts && $room_avail_array[$z]->id_room == $id_room && $room_avail_array[$z]->available == "Y"){
+                    //echo "kalos" . $room_avail_array[$z]->id_ts . " " . $room_avail_array[$z]->id_room . ") ";
+                    ?><div class="form-check harisformcheck">
+                    <input class="form-check-input" type="checkbox" name="testtableradio[<?php echo $id_room . "" . $id_ts;?>]" value="<?php echo $id_room . "," . $id_ts; ?>" >
+                    <?php echo $room_list_array[$y]->id . " " . $room_list_array[$y]->room_code . "<br>"; ?>
+                  </div>
+                    <?php
+
+                  }
+
+                }
+
+              }
+
+              ?>
+
             </td>
             <?php } ?>
           </tr>

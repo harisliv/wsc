@@ -10,14 +10,47 @@
   use GuzzleHttp\Exception\RequestException;
   use GuzzleHttp\Psr7\Request;
   use GuzzleHttp\Middleware;
+  use GuzzleHttp\Pool;
+  use GuzzleHttp\Psr7\Response;
+  use Psr\Http\Message\ResponseInterface;
+
+  use GuzzleHttp\Promise;
   ini_set('display_errors', 1);
   ini_set('display_startup_errors', 1);
   error_reporting(E_ALL);
-  //error_reporting(0);
+  error_reporting(0);
 
   $client = new GuzzleHttp\Client();
 
   try {
+    $promises = [
+        'getonediv'  => $client->getAsync('http://localhost/shedulerapi/controller/room_avail.php',
+        [
+          'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' =>
+        [
+          'id_acadsem' => $_SESSION["id_acadsem"],
+          'available' => "N",
+          'learn_sem' => $_SESSION["learn_sem"]
+        ]
+      ])
+        ];
+
+    // Wait on all of the requests to complete. Throws a ConnectException
+    // if any of the requests fail
+    $results = Promise\unwrap($promises);
+
+    // Wait for the requests to complete, even if some of them fail
+    $results = Promise\settle($promises)->wait();
+
+    $body = $results['getonediv']['value']->getBody();
+    $string = $body->getContents();
+    $json = json_decode($string);
+    //$getdivision_array = $json->data->schedulers;
+    $rows_returned = $json->data->rows_returned;
+    $not_avail_id = $json->data->rooms_avail;
+
+
 ?>
     <table class="table table-bordered">
       <thead>
@@ -30,55 +63,43 @@
       </thead>
       <tbody>
 
-        <?php for ($x = 0; $x <= 4; $x++) {
-
-
-
-          ?>
-          <?php for ($st = 1 + $x*13 ; $st <= 13 + $x*13 ; $st++) { ?>
+        <?php for ($st = 1 ; $st <= 13 ; $st++) { ?>
 
         <tr>
+          <td><?php $time = $st + 7; echo $time; ?></td>
 
-          <td><?php echo 8++; ?></td>
-          <?php for ($y = 0; $y <= 4; $y++) {
-             for ($y = 1; $y <= 9; $y++) {
-            ?>
-          <td>
+          <?php for ($x = 0; $x <= 4; $x++) { ?>
+            <td>
+              <?php
+              $id = $st + $x * 13;
+              echo "ts_id:" . $id;
+              for ($y = 1; $y <= 9; $y++) {
 
-          </td>
-        <?php } } ?>
+
+                for ($z = 0; $z <= $rows_returned; $z++) {
+
+                  if($not_avail_id[$z]->id == $id){
+                    echo "kalos";
+                  }
+
+                }
+
+                echo " ΑΙΘΟΥΣΑ " . $y . " data: " . $rows_returned . "<br>";
+              }?>
+            </td>
+
+
+        <?php } ?>
         </tr>
-      <?php } }?>
+      <?php }?>
 
       </tbody>
     </table>
     <?php
 
-  $res = $client->request('POST', 'http://localhost/shedulerapi/controller/room_avail.php' ,
-  [
-          'headers' =>
-            [
-        'Authorization' => $_SESSION["authtoken"]
-            ],
-
-          'json' =>
-            [
-        'id_room' => $y,
-        'id_ts' => $st,
-        'id_acadsem' => 1,
-        'available' => "Y",
-        'learn_sem' => "B"
-            ]
-  ]
-  );
 
 
-    $response = (string) $res->getBody();
-    $json = json_decode($response);
-    $messages = $json->messages;
-    $data = $json->data->rooms_avail;
 
-  }
 }
 
 
