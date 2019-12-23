@@ -34,7 +34,8 @@ function headernav()
 	if(!isset($_SESSION["id_acadsem"]) && !isset($_SESSION["learn_sem"])) {
 
 				$_SESSION["id_acadsem"] = 1;
-				$_SESSION["learn_sem"] = "A";
+				$_SESSION["learn_sem"] = "B";
+				$_SESSION["lektiko_acadsem"] = "ΧΕΙΜΕΡΙΝΟ ΕΞΑΜΗΝΟ 2017";
 	}
 					//echo "sess acad sem" . $_SESSION["id_acadsem"];
 					//echo "sess learn sem" . $_SESSION["learn_sem"];
@@ -62,12 +63,17 @@ function headernav()
 <!DOCTYPE html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
 
   <!-- Bootstrap 4 CSS and custom CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
   <style>
-      body { padding-top: 5rem; }
-      .starter-template { padding: 3rem 1.5rem; }
+      body { padding-top: 5rem;
+				font-family: 'Roboto Condensed', sans-serif;
+			}
+
+
+			.starter-template { padding: 3rem 1.5rem; }
       #logout{ display:none; }
       .now {color : red!important;}
       .now:hover {color:cyan!important;}
@@ -125,54 +131,105 @@ function headernav()
 	}
 
 	.sidenav {
-	    width: 25%;
-	    position: fixed;
-	    z-index: 1;
-	    top: 150px;
-	    left: 10px;
-	    background: #eee;
-	    overflow-y: hidden;
-	    padding: 8px 8px;
-	    height: 80vh;
+    width: 30%;
+    position: fixed;
+    z-index: 1;
+    top: 5vh;
+    left: 0px;
+    background: #212529;
+    overflow-y: hidden;
+    padding: 8px 23px;
+    height: 95vh;
+}
+
+input#submit {
+    margin-top: 8px;
+}
+
+	.main {
+	  margin-left: 30%; /* Same width as the sidebar + left position in px */
 	}
 
-.main {
-  margin-left: 140px; /* Same width as the sidebar + left position in px */
+	.sidenav a {
+	  padding: 6px 8px 6px 16px;
+	  text-decoration: none;
+	  font-size: 25px;
+	  color: #2196F3;
+	  display: block;
+	}
+
+	#exampleFormControlSelect2 {
+	    overflow: auto;
+	    height: 75vh;
+
+	}
+
+	.form-check.harisformdelete {
+		padding-left: 0;
+		margin: 5px;
 }
 
-.sidenav a {
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #2196F3;
-  display: block;
+.labelformcheck2{
+	background-color: aquamarine;
+	padding: 5px;
 }
 
-#exampleFormControlSelect2 {
-    overflow: auto;
-    height: 70vh;
-
+.labelformcheck2:hover{
+	background-color: green;
 }
 
-.arranged {
-    border: 2px solid green;
-    border-radius: 25px;
-    background-color: aquamarine;
-    padding-left: 22px;
+
+
+option.practice {
+    color: red;
 }
 
-.form-check.harisformcheck {
-    border: 2px solid red;
-    padding-left: 2.25rem;
-    border-radius: 25px;
-
-    background-color: indianred;
-    margin: 5px;
+option.theory {
+    color: green;
 }
 
-.alert.alert-danger {
-    margin-left: 140px;
+option.lab {
+    color: blue;
 }
+
+.harisformcheck label {
+    margin-bottom: 0;
+		cursor: pointer;
+}
+
+	.form-check.harisformcheck {
+	    padding-left: 0;
+	    border-radius: 25px;
+	    margin: 5px;
+	}
+
+	.alert.alert-danger {
+	    margin-left: 25%;
+	}
+
+	 .labelformcheck:hover
+	 {
+		border-bottom: 2px solid;
+		margin-bottom: -2px;
+		}
+
+	.labelformcheck input[type=checkbox], .labelformcheck2 input[type=checkbox] {
+		display: none;
+	}
+
+	.red{background-color:red;}
+	.green{
+		border: 2px solid;
+		    padding: 3px;
+		}
+
+		.bg-dark {
+    background-color: #212529!important;
+	}
+
+	.navbar{
+		padding: 0.75rem 1rem!important;
+	}
 
   </style>
 
@@ -182,48 +239,46 @@ function headernav()
 
 <!-- navbar -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="http://localhost/wsc">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
+        <div class="navbar-nav ml-auto">
           <?php  if(isset($_SESSION["authtoken"])){ ?>
-            <a class="nav-item nav-link" href="http://localhost/wsc/searchcoursebyid.php">Search Course by ID</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/showallcourses.php">Show All Courses</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newroomavailable.php">New Room availability</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newcoursethisyear.php">New course this year</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/newscheduleraio.php">Scheduler</a>
 					<?php  }?>
 
 							<form action="#" method="post">
-								<select name='id_acadsem'>
+								<div class="form-group">
+								<select class="form-control" id="exampleFormControlSelect1" name='id_acadsem'>
 									<?php
 									if(isset($_SESSION["id_acadsem"])) {?>
 										<option value="<?php echo $_SESSION["id_acadsem"]?>"><b><?php echo $_SESSION["lektiko_acadsem"]?></b></option>
 									<?php } ?>
-				          <?php for ($x = 0; $x < $json3->data->rows_returned; $x++) { ?>
-										<option value="<?php print_r($json3->data->acadsems[$x]->id); ?>">
-					            <?php print_r($json3->data->acadsems[$x]->lektiko_acadsem); ?>
+				          <?php for ($x = 0; $x < $json3->data->rows_returned; $x++) {
+										if($json3->data->acadsems[$x]->id !== $_SESSION["id_acadsem"]){?>
+
+										<option value="<?php echo $json3->data->acadsems[$x]->id; ?>">
+					            <?php echo $json3->data->acadsems[$x]->lektiko_acadsem; ?>
 					          </option>
-				        <?php } ?>
+				        <?php } }?>
 				        </select>
-								<select name="learn_sem">
+								</div>
+								<div class="form-group">
+								<select class="form-control" id="exampleFormControlSelect1" name="learn_sem">
 									<?php
 									if(isset($_SESSION["learn_sem"])) {?>
 										<option value="<?php echo $_SESSION["learn_sem"]?>"><b><?php echo $_SESSION["learn_sem"]?></b></option>
-									<?php } ?>
+									<?php } for($i = 'A'; $i < 'G'; $i++)
+									{
+										if($i !== $_SESSION["learn_sem"]){?>
 
-									<option value="A">A</option>
-									<option value="B">B</option>
-									<option value="C">C</option>
-									<option value="D">D</option>
-									<option value="E">E</option>
-									<option value="F">F</option>
-									<option value="G">G</option>
-									<option value="H">H</option>
+									<option value="<?php echo $i ?>"><?php echo $i ?></option>
+								<?php }} ?>
+
 								</select>
-							<input type="submit" name="form2">
+							</div>
+
+							<input class = "btn btn-primary" type="submit" name="form2">
 							</form>
 
         </div>

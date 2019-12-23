@@ -86,7 +86,7 @@
       $json = json_decode($res->getBody()->getContents());
       $scheduler_rows_del = $json->data->rows_returned;
 
-      echo "rows" . $scheduler_rows_del;
+      //echo "rows" . $scheduler_rows_del;
 
       if($scheduler_rows_del > 0){
 
@@ -255,11 +255,11 @@
       'id_course' => $pieces[0],
       'id_acadsem' => $_SESSION["id_acadsem"],
       'type_division' => $pieces[1],
-      'lektiko_division' => "tha doume pws",
+      'lektiko_division' => $pieces_room_avail[2],
       'id_prof' => $id_prof,
       'id_room' => $room_id,
       'id_ts' => $ts_id,
-      'division_str' => $pieces[2],
+      'division_str' => $pieces[2] . "/" . $pieces_room_avail[2],
       'learn_sem' => $_SESSION["learn_sem"]
       ]
       ]);
@@ -343,11 +343,11 @@
 
       ?>
 
-      <form action="newscheduleraio_NO_ASYNC_v2.php" method="post">
+      <form action="newscheduleraio_NO_ASYNC_v3.php" method="post">
 
 
       <div class="sidenav">
-        <?php if($room_avail_rows > 0) {?> <center><input type="submit" value="Submit" id="submit"></center><br> <?php } ?>
+        <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary" type="submit" value="Submit" id="submit"></center><br> <?php } ?>
 
         <div class='form-group'>
             <label>Καθηγητής</label>
@@ -410,7 +410,7 @@
                        }
                      else{ ?>
 
-                     <option class="lab" value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->name . "," . $lab_hours; ?>">
+                     <option class="lab" value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "Ε" . "/" . $course_list_array[$x]->name . "," . $lab_hours; ?>">
 
                        <?php
 
@@ -473,7 +473,7 @@
                          }
                        else{ ?>
 
-                       <option class="theory" name="theory" value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "THEORY" . "/" . $course_list_array[$x]->name . "," . $theory_hours; ?>">
+                       <option class="theory" name="theory" value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "Θ" . "/" . $course_list_array[$x]->name . "," . $theory_hours; ?>">
 
                          <?php
 
@@ -536,7 +536,7 @@
                          }
                        else{ ?>
 
-                       <option class="practice" value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->name . "," . $practice_hours; ?>">
+                       <option class="practice" value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "ΑΠ" . "/" . $course_list_array[$x]->name . "," . $practice_hours; ?>">
 
                          <?php
 
@@ -565,11 +565,11 @@
 
 
       <table class="table table-bordered">
-        <thead>
+        <thead class="thead-dark">
           <th> </th>
            <?php for ($y = 0; $y <= 4; $y++) { ?>
           <th>
-            <?php echo $weekgk[$y]; ?>
+            <?php echo "<center>" . $weekgk[$y] . "</center>"; ?>
           </th>
           <?php } ?>
         </thead>
@@ -577,13 +577,13 @@
 
           <?php for ($st = 1 ; $st <= 13 ; $st++) { ?>
           <tr>
-            <td><?php $time = $st + 7; echo $time . ":00"; ?></td>
+            <td bgcolor="#212529" style="color:white;"><?php $time = $st + 7; echo "<strong>" . $time . ":00</strong>"; ?></td>
             <?php for ($x = 0; $x <= 4; $x++) { ?>
-            <td>
+            <td align="center">
 
               <?php
               $id_ts = $st + $x * 13;
-              echo "id_ts:" . $id_ts . "<br>";
+              //echo "id_ts:" . $id_ts . "<br>";
               for ($y = 0; $y < $room_list_rows; $y++) {
 
                 for ($z = 0; $z < $room_avail_rows; $z++) {
@@ -601,10 +601,19 @@
                   $scheduled_rows = $json->data->rows_returned;
                   if($scheduled_rows > 0){
                   ?>
-                  <div class="form-check harisformdelete">
-                  <input class="form-check-input" type="checkbox" name="delete[<?php echo $id_room . "" . $id_ts;?>]"
+                  <div class="form-check harisformdelete"><label class="labelformcheck2">
+                  <input class="form-check-input inputjsgreen" type="checkbox" name="delete[<?php echo $id_room . "" . $id_ts;?>]"
                   value="<?php echo $id_room . "," . $id_ts . "," . $scheduled[0]->type_division;?>" >
-                  <?php echo $scheduled[0]->division_str . "<br>"; ?>
+                  <?php
+                  $pieces_div_echo = explode("/", $scheduled[0]->division_str);
+                  $pieces_acro_title = explode(" ", $pieces_div_echo[2]);
+                  $result = "";
+                  foreach ($pieces_acro_title as $char){
+                    $result .= mb_substr($char,0,1,'UTF-8');
+                  }
+
+                  echo "<center>" . $result .  "-" . $pieces_div_echo[1] . "" . $pieces_div_echo[0] . "<br>" . $pieces_div_echo[3] ."</center></label><br>";
+                  ?>
                 </div>
                   <?php
                 }
@@ -612,11 +621,11 @@
 
                   if($room_avail_array[$z]->id_ts == $id_ts && $room_avail_array[$z]->id_room == $id_room && $room_avail_array[$z]->available == "Y"){
                     //echo "kalos" . $room_avail_array[$z]->id_ts . " " . $room_avail_array[$z]->id_room . ") ";
-                    ?><div class="form-check harisformcheck">
-                    <input class="form-check-input" type="checkbox" name="testtableradio[<?php echo $id_room . "" . $id_ts;?>]" value="<?php echo $id_room . "," . $id_ts; ?>" >
+                    ?><div class="form-check harisformcheck"><label class="labelformcheck">
+                    <input class="form-check-input inputjsred" type="checkbox" name="testtableradio[<?php echo $id_room . "" . $id_ts;?>]" value="<?php echo $id_room . "," . $id_ts . "," . $room_list_array[$y]->lektiko_room; ?>" >
                     <?php
                     //echo $room_list_array[$y]->id . " ";
-                    echo $room_list_array[$y]->room_code . "<br>"; ?>
+                    echo $room_list_array[$y]->room_code . "</label>"; ?>
                   </div>
                     <?php
 
