@@ -259,7 +259,7 @@
       'id_prof' => $id_prof,
       'id_room' => $room_id,
       'id_ts' => $ts_id,
-      'division_str' => $pieces[2] . "/" . $pieces_room_avail[2],
+      'division_str' => $pieces[2],
       'learn_sem' => $_SESSION["learn_sem"]
       ]
       ]);
@@ -347,21 +347,11 @@
 
 
       <div class="sidenav">
-        <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary" type="submit" value="Submit" id="submit"></center><br> <?php } ?>
+
+
 
         <div class='form-group'>
-            <label>Καθηγητής</label>
-            <select name='id_prof'>
-              <?php for ($x = 0; $x < $professor_rows; $x++) { ?>
-              <option value="<?php print_r($professor_array[$x]->id); ?>">
-                <?php print_r($professor_array[$x]->fullname); ?>
-              </option>
-            <?php } ?>
-            </select>
-          </div>
-
-        <div class='form-group'>
-            <label>Course</label>
+            <label style="color:white;">Επιλογή μαθήματος και καθηγητή:</label>
             <div class="form-group">
              <select multiple class="form-control tallform" id="exampleFormControlSelect2" name='id_course'>
                  <?php for ($x = 0; $x < $course_rows; $x++) {
@@ -370,7 +360,11 @@
                    for ($y = 1; $y <= $course_list_array[$x]->count_div_lab; $y++){
 
                      $promises = [
-                         'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $y . "/" . "LAB" . "/" . $course_list_array[$x]->name]])
+                         'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],
+                         'query' =>
+                         [
+                           'id_acadsem' => $_SESSION["id_acadsem"],
+                           'division_str' => $y . "/" . "Ε" . "/" . $course_list_array[$x]->name]])
                          ];
 
                      // Wait on all of the requests to complete. Throws a ConnectException
@@ -396,7 +390,7 @@
 
                      if($hoursleft == 0 ){ ?>
 
-                       <option value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "LAB" . "/" . $course_list_array[$x]->name; ?>" disabled>
+                       <option disabled>
 
                          <?php
 
@@ -433,8 +427,13 @@
                      for ($y = 1; $y <= $course_list_array[$x]->count_div_theory; $y++){
 
                        $promises = [
-                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $y . "/" . "THEORY" . "/" . $course_list_array[$x]->name]])
-                           ];
+                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],
+                           'query' =>
+                           [
+                             'id_acadsem' => $_SESSION["id_acadsem"],
+                             'division_str' => $y . "/" . "Θ" . "/" . $course_list_array[$x]->name
+                             ]
+                           ])];
 
                        // Wait on all of the requests to complete. Throws a ConnectException
                        // if any of the requests fail
@@ -496,8 +495,13 @@
                      for ($y = 1; $y <= $course_list_array[$x]->count_div_practice; $y++){
 
                        $promises = [
-                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->name]])
-                           ];
+                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],
+                           'query' =>
+                           [
+                             'id_acadsem' => $_SESSION["id_acadsem"],
+                             'division_str' => $y . "/" . "ΑΠ" . "/" . $course_list_array[$x]->name
+                           ]
+                           ])];
 
                        // Wait on all of the requests to complete. Throws a ConnectException
                        // if any of the requests fail
@@ -555,15 +559,24 @@
              </select>
            </div>
 
-          </div>
+         </div>
+
+         <div class='form-group'>
+             <select name='id_prof' class="form-control">
+               <?php for ($x = 0; $x < $professor_rows; $x++) { ?>
+               <option value="<?php print_r($professor_array[$x]->id); ?>">
+                 <?php print_r($professor_array[$x]->fullname); ?>
+               </option>
+             <?php } ?>
+             </select>
+           </div>
+
+          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" type="submit" value="Submit" id="submit"></center><br> <?php } ?>
+
       </div>
 
       <div class="main">
-
-      <pre> <?php //print_r($json->data->rooms[0]->id);
-       ?> </pre>
-
-
+        <h1 style="text-align:center;color:#212529;">Πρόγραμμα</h1><br>
       <table class="table table-bordered">
         <thead class="thead-dark">
           <th> </th>
@@ -612,7 +625,7 @@
                     $result .= mb_substr($char,0,1,'UTF-8');
                   }
 
-                  echo "<center>" . $result .  "-" . $pieces_div_echo[1] . "" . $pieces_div_echo[0] . "<br>" . $pieces_div_echo[3] ."</center></label><br>";
+                  echo "<center>" . $result .  "-" . $pieces_div_echo[1] . "" . $pieces_div_echo[0] . "<br>" . $scheduled[0]->lektiko_division ."</center></label><br>";
                   ?>
                 </div>
                   <?php

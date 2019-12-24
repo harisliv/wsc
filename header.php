@@ -63,6 +63,8 @@ function headernav()
 <!DOCTYPE html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<script src="https://kit.fontawesome.com/b86fda2231.js" crossorigin="anonymous"></script>
+
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
 
   <!-- Bootstrap 4 CSS and custom CSS -->
@@ -134,21 +136,22 @@ function headernav()
     width: 30%;
     position: fixed;
     z-index: 1;
-    top: 5vh;
+    top: 64px;
     left: 0px;
     background: #212529;
     overflow-y: hidden;
-    padding: 8px 23px;
-    height: 95vh;
+    padding: 0px 23px;
+    height: 97vh;
 }
 
 input#submit {
     margin-top: 8px;
 }
 
-	.main {
-	  margin-left: 30%; /* Same width as the sidebar + left position in px */
-	}
+.main {
+	margin-left: 31%;
+	width: 82%;
+}
 
 	.sidenav a {
 	  padding: 6px 8px 6px 16px;
@@ -161,8 +164,31 @@ input#submit {
 	#exampleFormControlSelect2 {
 	    overflow: auto;
 	    height: 75vh;
-
 	}
+
+	#exampleFormControlSelect2::-webkit-scrollbar {
+  width: 10px;
+}
+
+#exampleFormControlSelect2::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 20px;
+}
+
+#exampleFormControlSelect2::-webkit-scrollbar-track {
+  background: #ddd;
+  border-radius: 20px;
+}
+
+	@media only screen and (max-height: 665px) {
+		#exampleFormControlSelect2 {
+		    height: 65vh;
+		}
+
+		.main {
+			width: 74%;
+		}
+}
 
 	.form-check.harisformdelete {
 		padding-left: 0;
@@ -172,6 +198,8 @@ input#submit {
 .labelformcheck2{
 	background-color: aquamarine;
 	padding: 5px;
+	cursor: pointer;
+
 }
 
 .labelformcheck2:hover{
@@ -231,6 +259,20 @@ option.lab {
 		padding: 0.75rem 1rem!important;
 	}
 
+	select#exampleFormControlSelect1 {
+    margin-right: 25px;
+}
+
+.logoharis{
+		font-size: 13px;
+    color: white;
+    margin-right: 15px;
+    margin-top: 1px;
+    border: 2px solid;
+    border-radius: 50%;
+    padding: 8px;
+}
+
   </style>
 
 </head>
@@ -239,15 +281,21 @@ option.lab {
 
 <!-- navbar -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			<span class="logoharis">
+				<i class="fas fa-code"></i>
+			</span>
+			<div class="navbar-nav mr-auto navbarharis">
+				          <?php  if(isset($_SESSION["authtoken"])){ ?>
+            <a class="nav-item nav-link" href="http://localhost/wsc/searchcoursebyid.php">Εκτύπωση</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/showallcourses.php">Πρόγραμμα</a>
+					<?php  }?>
+				</div>
         <div class="navbar-nav ml-auto">
           <?php  if(isset($_SESSION["authtoken"])){ ?>
 					<?php  }?>
 
-							<form action="#" method="post">
+							<form action="#" method="post" class='form-inline'>
 								<div class="form-group">
 								<select class="form-control" id="exampleFormControlSelect1" name='id_acadsem'>
 									<?php

@@ -577,7 +577,7 @@
 
           <?php for ($st = 1 ; $st <= 13 ; $st++) { ?>
           <tr>
-            <td><?php $time = $st + 7; echo $time . ":00"; ?></td>
+            <td><?php $time = $st + 7; echo $time; ?></td>
             <?php for ($x = 0; $x <= 4; $x++) { ?>
             <td>
 
