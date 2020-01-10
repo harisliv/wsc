@@ -1,5 +1,5 @@
 {
-    "name": "livieratos-pavli/wsc",
+    "name": "harisliv/wsc",
     "authors": [
         {
             "name": "harisliv",
@@ -7,6 +7,6 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.5"
     }
 }
