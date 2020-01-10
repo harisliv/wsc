@@ -40,6 +40,10 @@ function headernav()
 					//echo "sess acad sem" . $_SESSION["id_acadsem"];
 					//echo "sess learn sem" . $_SESSION["learn_sem"];
 	if(isset($_POST["form2"])){
+		$_SESSION['refresh_post'] = '';
+		$_SESSION['refresh_delete'] = '';
+		//unset($_SESSION['refresh_post']);
+		//unset($_SESSION['refresh_delete']);
 		//echo "<br> post acad sem " . $_POST["id_acadsem"];
 		//echo "<br> post learn sem " . $_POST["learn_sem"];
 		//if(isset($_POST["id_acadsem"])) {
