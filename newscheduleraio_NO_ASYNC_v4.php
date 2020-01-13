@@ -48,6 +48,11 @@
 
       else{
 
+        if(!isset($_POST["form1"])){
+      		$_SESSION['refresh_post'] = 'a';
+      		$_SESSION['refresh_delete'] = 'a';
+        }
+
         if($_SESSION["refresh_post"] === $_POST['testtableradio'] || $_SESSION["refresh_delete"] === $_POST['delete']){
           ?><div class="alert alert-danger" role="alert"><?php
           echo "ΔΕΝ ΓΙΝΕΤΑΙ ΝΑ ΚΑΝΟΥΜΕ SUBMIT ΤΑ ΙΔΙΑ VALUES ME REFRESH";
@@ -55,7 +60,7 @@
         else{
 
 
-      if (isset($_POST['delete'])) {
+      if (isset($_POST['delete']) && isset($_POST['deletebox'])) {
 
         $_SESSION["refresh_delete"] = $_POST['delete'];
         foreach($_POST['delete'] as $del_num => $del_val){
@@ -144,7 +149,7 @@
       (empty($_POST['id_prof'])  ? $id_prof = NULL : $id_prof = $_POST['id_prof']);
       (empty($_POST['division_str'])  ? $division_str = NULL : $division_str = $_POST['division_str']);
 
-
+      $pieces_prof = explode(",", $id_prof);
       //echo $pieces[0] . "<br>"; // piece1
       //echo $pieces[1];
       //echo $id_prof;
@@ -261,8 +266,8 @@
       'id_course' => $pieces[0],
       'id_acadsem' => $_SESSION["id_acadsem"],
       'type_division' => $pieces[1],
-      'lektiko_division' => $pieces_room_avail[2],
-      'id_prof' => $id_prof,
+      'lektiko_division' => $pieces_room_avail[2] . "/" . $pieces_prof[1],
+      'id_prof' => $pieces_prof[0],
       'id_room' => $room_id,
       'id_ts' => $ts_id,
       'division_str' => $pieces[2],
@@ -358,7 +363,7 @@
 
 
         <div class='form-group'>
-            <label style="color:white;">Επιλογή μαθήματος και καθηγητή:</label>
+            <label style="color:white;">ΕΠΙΛΟΓΗ ΜΑΘΗΜΑΤΟΣ</label>
             <div class="form-group">
              <select multiple class="form-control tallform" id="exampleFormControlSelect2" name='id_course'>
                  <?php for ($x = 0; $x < $course_rows; $x++) {
@@ -570,15 +575,21 @@
 
          <div class='form-group'>
              <select name='id_prof' class="form-control">
+               <option value="-" disabled selected>
+                 <?php echo "ΕΠΙΛΕΞΤΕ ΔΙΔΑΣΚΩΝ ΚΑΘΗΓΗΤΗ"; ?>
+               </option>
                <?php for ($x = 0; $x < $professor_rows; $x++) { ?>
-               <option value="<?php print_r($professor_array[$x]->id); ?>">
-                 <?php print_r($professor_array[$x]->fullname); ?>
+               <option value="<?php echo $professor_array[$x]->id . "," . $professor_array[$x]->fullname; ?>">
+                 <?php echo $professor_array[$x]->fullname; ?>
                </option>
              <?php } ?>
              </select>
            </div>
 
-          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" type="submit" value="Submit" id="submit"></center><br> <?php } ?>
+           <div class="form-check">
+             <label class="whitelabel"><input class="form-check-input" type="checkbox" name="deletebox" value="" >ΕΠΙΛΕΞΤΕ ΤΟ ΚΟΥΤΑΚΙ ΑΝ ΘΕΛΕΤΕ ΝΑ ΔΙΑΓΡΑΨΕΤΕ ΚΑΠΟΙΟ ΤΜΗΜΑ</label>
+           </div>
+          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" name="form1" type="submit" value="Submit" id="submit"></center><br> <?php } ?>
 
       </div>
 
@@ -631,8 +642,10 @@
                   foreach ($pieces_acro_title as $char){
                     $result .= mb_substr($char,0,1,'UTF-8');
                   }
+                  $pieces_lektiko = explode("/", $scheduled[0]->lektiko_division);
 
-                  echo "<center>" . $result .  "-" . $pieces_div_echo[1] . "" . $pieces_div_echo[0] . "<br>" . $scheduled[0]->lektiko_division ."</center></label><br>";
+
+                  echo "<center>" . $result .  "-" . $pieces_div_echo[1] . "" . $pieces_div_echo[0] . "<br>" . $pieces_lektiko[0]  . "<br>" . $pieces_lektiko[1] ."</center></label><br>";
                   ?>
                 </div>
                   <?php

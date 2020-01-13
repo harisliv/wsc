@@ -167,7 +167,7 @@ input#submit {
 
 	#exampleFormControlSelect2 {
 	    overflow: auto;
-	    height: 75vh;
+	    height: 73vh;
 	}
 
 	#exampleFormControlSelect2::-webkit-scrollbar {
@@ -276,6 +276,10 @@ option.lab {
     border-radius: 50%;
     padding: 8px;
 }
+
+ .whitelabel {
+	 color:white;
+ }
 
   </style>
 
