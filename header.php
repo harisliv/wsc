@@ -279,6 +279,7 @@ option.lab {
 
  .whitelabel {
 	 color:white;
+	 font-size: 0.85rem;
  }
 
   </style>
