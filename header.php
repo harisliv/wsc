@@ -200,28 +200,9 @@ input#submit {
 }
 
 .labelformcheck2{
-	background-color: aquamarine;
 	padding: 5px;
 	cursor: pointer;
 
-}
-
-.labelformcheck2:hover{
-	background-color: green;
-}
-
-
-
-option.practice {
-    color: red;
-}
-
-option.theory {
-    color: green;
-}
-
-option.lab {
-    color: blue;
 }
 
 .harisformcheck label {
@@ -249,10 +230,11 @@ option.lab {
 		display: none;
 	}
 
-	.red{background-color:red;}
+	.red{background-color:yellow;}
 	.green{
 		border: 2px solid;
 		    padding: 3px;
+				background-color: #dc3a4b!important;
 		}
 
 		.bg-dark {
@@ -281,6 +263,43 @@ option.lab {
 	 color:white;
 	 font-size: 0.85rem;
  }
+
+ label.labelformcheck2.LAB {
+    background-color: dodgerblue;
+	}
+
+	label.labelformcheck2.THEORY {
+		 background-color: aquamarine;
+	 }
+
+	 label.labelformcheck2.PRACTICE {
+			background-color: #d578ec;
+	 }
+
+	 option.practice {
+	     color: #ff00bc;
+	 }
+
+	 option.theory {
+	     color: green;
+	 }
+
+	 option.lab {
+	     color: blue;
+	 }
+
+
+
+label.labelformcheck2:hover {
+	 background-color: #dc3a4b;
+}
+
+.alert.alert-danger {
+    text-align: center;
+		width:100%;
+}
+
+
 
   </style>
 

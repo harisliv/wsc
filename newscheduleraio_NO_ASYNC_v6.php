@@ -38,24 +38,24 @@
       }
 
       headernav();
+      if (isset($_POST["form1"])){
+
 
       if (isset($_POST['delete']) && isset($_POST['testtableradio'])){
         ?><div class="alert alert-danger" role="alert"><?php
         echo "Η ΕΝΕΡΓΙΑ ΠΟΥ ΕΠΙΛΕΞΑΤΕ ΔΕΝ ΕΙΝΑΙ ΕΦΙΚΤΗ";
-        ?></div><?php
+        ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button></div><?php
       }
       //ΝΟ 1
       else{
-
-        if(!isset($_POST["form1"])){
-      		$_SESSION['refresh_post'] = 'a';
-      		$_SESSION['refresh_delete'] = 'a';
-        }
-
         if($_SESSION["refresh_post"] === $_POST['testtableradio'] || $_SESSION["refresh_delete"] === $_POST['delete']){
           ?><div class="alert alert-danger" role="alert"><?php
           echo "ΔΕΝ ΓΙΝΕΤΑΙ ΝΑ ΚΑΝΟΥΜΕ SUBMIT ΤΑ ΙΔΙΑ VALUES ME REFRESH";
-          ?></div><?php
+          ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button></div><?php
         }
         //ΝΟ 2
         else{
@@ -100,21 +100,12 @@
 
       }
     }
+
+    //elseif (isset($_POST['delete']) && !isset($_POST['deletebox'])) {}
     //SUBMIT IF
-    if (isset($_POST['testtableradio'])) {
+    elseif (isset($_POST['testtableradio']) && isset($_POST['id_prof']) && isset($_POST['id_course'])  && !isset($_POST['deletebox'])) {
 
-      if (!isset($_POST['id_prof'])) {
-        ?><div class="alert alert-danger" role="alert"><?php
-        echo "ΠΑΡΑΚΑΛΩ ΕΠΙΛΕΞΤΕ ΚΑΘΗΓΗΤΗ";
-        ?></div><?php
-      }
-      elseif (!isset($_POST['id_course'])) {
-        ?><div class="alert alert-danger" role="alert"><?php
-        echo "ΠΑΡΑΚΑΛΩ ΕΠΙΛΕΞΤΕ ΤΜΗΜΑ";
-        ?></div><?php
-      }
 
-      else{
 
 
 
@@ -147,7 +138,9 @@
       if($pieces[3] - $arranged_one < $count_checked){
         ?><div class="alert alert-danger" role="alert"><?php
         echo "ΕΧΕΤΕ ΕΠΙΛΕΞΕΙ ΠΕΡΙΣΣΟΤΕΡΕΣ ΩΡΕΣ ΑΠΟ ΑΥΤΕΣ ΠΟΥ ΕΙΝΑΙ ΔΙΑΘΕΣΙΜΕΣ";
-        ?></div><?php
+        ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button></div><?php
 
       }
 
@@ -181,18 +174,39 @@
 
     $json = json_decode($res->getBody()->getContents());
     $scheduler_rows_del = $json->data->rows_returned;
-
+    //echo "scheduler_rows_del :" . $scheduler_rows_del;
 
         if($pieces[1] === "THEORY" && $scheduler_rows_del > 0){
 
         ?><div class="alert alert-danger" role="alert"><?php
         echo "ΠΡΕΠΕΙ ΝΑ ΔΙΑΓΡΑΨΕΤΕ ΤΑ ΥΠΑΡΧΟΥΣΑ ΤΜΗΜΑΤΑ ΓΙΑΤΙ ΜΙΑ ΘΕΩΡΙΑ ΔΕΝ ΜΠΟΡΕΙ ΝΑ ΕΧΕΙ ΠΑΡΑΠΑΝΩ";
-        ?></div><?php
+        ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button></div><?php
 
         }
 
 
         else{
+
+          $res = $client->request('GET', 'scheduler.php',
+        [
+          'headers' => ['Authorization' => $_SESSION["authtoken"]],
+          'query' => ['id_ts' => $ts_id, 'id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]
+        ]
+        );
+
+        $json = json_decode($res->getBody()->getContents());
+        $scheduler_check_type = $json->data->schedulers[0]->type_division;
+
+        if($scheduler_check_type == "THEORY"){
+          ?><div class="alert alert-danger" role="alert"><?php
+          echo "ΥΠΑΡΧΕΙ ΘΕΩΡΙΑ ΚΛΕΙΣΜΕΝΗ";
+          ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button></div><?php
+  }
+  else{
 
           $res = $client->request('PATCH', 'room_avail.php',
         [
@@ -224,14 +238,27 @@
         $json = json_decode($string);
         $postedid = $json->data->schedulers[0]->id_course;
         $postedtype = $json->data->schedulers[0]->type_division;
-
+      }
           }
 
           }
         }
+
     }
+
+    else {
+      ?><div class="alert alert-danger" role="alert"><?php
+      echo "ΔΕΝ ΕΧΕΤΕ ΣΥΜΠΛΗΡΩΣΕΙ ΤΑ ΑΠΑΡΑΙΤΗΤΑ ΣΤΟΙΧΕΙΑ";
+      ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button></div><?php
     }
   }
+}
+}
+elseif(!isset($_POST["form1"])){
+  $_SESSION['refresh_post'] = 'a';
+  $_SESSION['refresh_delete'] = 'a';
 }
 
 
@@ -577,7 +604,7 @@
                   $scheduled_rows = $json->data->rows_returned;
                   if($scheduled_rows > 0){
                   ?>
-                  <div class="form-check harisformdelete"><label class="labelformcheck2">
+                  <div class="form-check harisformdelete"><label class="labelformcheck2 <?php echo $scheduled[0]->type_division ?>" data-toggle="tooltip" data-placement="top" title="Διαφραφή καταγραφής">
                   <input class="form-check-input inputjsgreen" type="checkbox" name="delete[<?php echo $id_room . "" . $id_ts;?>]"
                   value="<?php echo $id_room . "," . $id_ts . "," . $scheduled[0]->type_division;?>" >
                   <?php
@@ -603,7 +630,7 @@
 
                   if($room_avail_array[$z]->id_ts == $id_ts && $room_avail_array[$z]->id_room == $id_room && $room_avail_array[$z]->available == "Y"){
                     //echo "kalos" . $room_avail_array[$z]->id_ts . " " . $room_avail_array[$z]->id_room . ") ";
-                    ?><div class="form-check harisformcheck"><label class="labelformcheck">
+                    ?><div class="form-check harisformcheck"><label class="labelformcheck" data-toggle="tooltip" data-placement="top" title="Επιλογή αίθουσας">
                     <input class="form-check-input inputjsred" type="checkbox" name="testtableradio[<?php echo $id_room . "" . $id_ts;?>]" value="<?php echo $id_room . "," . $id_ts . "," . $room_list_array[$y]->room_code; ?>" >
                     <?php
                     //echo $room_list_array[$y]->id . " ";
