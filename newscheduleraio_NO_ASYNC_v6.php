@@ -561,7 +561,7 @@ elseif(!isset($_POST["form1"])){
            <div class="form-check">
              <label class="whitelabel"><input class="form-check-input" type="checkbox" name="deletebox" value="" >ΕΠΙΛΕΞΤΕ ΤΟ ΚΟΥΤΑΚΙ ΑΝ ΘΕΛΕΤΕ ΝΑ ΔΙΑΓΡΑΨΕΤΕ ΚΑΠΟΙΟ ΤΜΗΜΑ</label>
            </div>
-          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" name="form1" type="submit" value="Submit" id="submit"></center><br> <?php } ?>
+          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" name="form1" type="submit" value="ΥΠΟΒΟΛΗ" id="submit"></center><br> <?php } ?>
 
       </div>
 
@@ -605,7 +605,7 @@ elseif(!isset($_POST["form1"])){
                   if($scheduled_rows > 0){
                   ?>
                   <div class="form-check harisformdelete"><label class="labelformcheck2 <?php echo $scheduled[0]->type_division ?>" data-toggle="tooltip" data-placement="top" title="Διαφραφή καταγραφής">
-                  <input class="form-check-input inputjsgreen" type="checkbox" name="delete[<?php echo $id_room . "" . $id_ts;?>]"
+                  <input onclick="myFunctionDelete()" class="form-check-input inputjsgreen" type="checkbox" name="delete[<?php echo $id_room . "" . $id_ts;?>]"
                   value="<?php echo $id_room . "," . $id_ts . "," . $scheduled[0]->type_division;?>" >
                   <?php
                   $pieces_div_echo = explode("/", $scheduled[0]->division_str);
@@ -631,7 +631,7 @@ elseif(!isset($_POST["form1"])){
                   if($room_avail_array[$z]->id_ts == $id_ts && $room_avail_array[$z]->id_room == $id_room && $room_avail_array[$z]->available == "Y"){
                     //echo "kalos" . $room_avail_array[$z]->id_ts . " " . $room_avail_array[$z]->id_room . ") ";
                     ?><div class="form-check harisformcheck"><label class="labelformcheck" data-toggle="tooltip" data-placement="top" title="Επιλογή αίθουσας">
-                    <input class="form-check-input inputjsred" type="checkbox" name="testtableradio[<?php echo $id_room . "" . $id_ts;?>]" value="<?php echo $id_room . "," . $id_ts . "," . $room_list_array[$y]->room_code; ?>" >
+                    <input onclick="myFunctionSubmit()" class="form-check-input inputjsred" type="checkbox" name="testtableradio[<?php echo $id_room . "" . $id_ts;?>]" value="<?php echo $id_room . "," . $id_ts . "," . $room_list_array[$y]->room_code; ?>" >
                     <?php
                     //echo $room_list_array[$y]->id . " ";
                     echo $room_list_array[$y]->lektiko_room . "</label>"; ?>

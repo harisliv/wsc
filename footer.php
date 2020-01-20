@@ -52,6 +52,15 @@ $(document).ready(function(){
     });
 });
 
+function myFunctionDelete(){
+          document.getElementById("submit").value= "ΔΙΑΓΡΑΦΗ";
+          }
+
+          function myFunctionSubmit(){
+                    document.getElementById("submit").value= "ΥΠΟΒΟΛΗ";
+                    }
+
+
 
 
 
