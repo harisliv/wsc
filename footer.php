@@ -52,15 +52,17 @@ $(document).ready(function(){
     });
 });
 
-function myFunctionDelete(){
-          document.getElementById("submit").value= "ΔΙΑΓΡΑΦΗ";
-          }
+  function myFunctionDelete(){
+            document.getElementById("submit").value= "ΔΙΑΓΡΑΦΗ";
+            }
 
-          function myFunctionSubmit(){
-                    document.getElementById("submit").value= "ΥΠΟΒΟΛΗ";
-                    }
+  function myFunctionSubmit(){
+            document.getElementById("submit").value= "ΥΠΟΒΟΛΗ";
+            }
 
-
+            function isChecked(checkbox, submit) {
+    document.getElementById(submit).disabled = !checkbox.checked;
+}
 
 
 

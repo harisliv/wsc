@@ -296,7 +296,12 @@ label.labelformcheck2:hover {
 
 .alert.alert-danger {
     text-align: center;
-		width:100%;
+		width:90%;
+}
+
+.btn-primary:disabled {
+    background-color: #5383b7;
+    border-color: #164373;
 }
 
 
