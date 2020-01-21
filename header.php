@@ -167,8 +167,9 @@ input#submit {
 
 	#exampleFormControlSelect2 {
 	    overflow: auto;
-	    height: 73vh;
-	}
+			height: 76vh;
+	    position: relative;
+			}
 
 	#exampleFormControlSelect2::-webkit-scrollbar {
   width: 10px;
@@ -296,7 +297,7 @@ label.labelformcheck2:hover {
 
 .alert.alert-danger {
     text-align: center;
-		width:90%;
+		width:60vw;
 }
 
 .btn-primary:disabled {

@@ -66,6 +66,18 @@ $(document).ready(function(){
 
 
 
+function postConfirm() {
+  if ($('.inputjsgreen').is(':checked')) {
+    if (confirm('Έχετε επιλέξει τμήμα για διαγραφή')) {
+        yourformelement.submit();
+    } else {
+        return false;
+    }
+  }
+}
+
+
+
 </script>
     <?php
     }

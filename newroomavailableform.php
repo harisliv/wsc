@@ -36,8 +36,7 @@
         'id_room' => $y,
         'id_ts' => $st,
         'id_acadsem' => 1,
-        'available' => "Y",
-        'learn_sem' => "B"
+        'available' => "Y"
             ]
   ]
   );

@@ -61,7 +61,7 @@
         else{
 
         //DELETE IF
-        if (isset($_POST['delete']) && isset($_POST['deletebox'])) {
+        if (isset($_POST['delete'])) {
 
         $_SESSION["refresh_delete"] = $_POST['delete'];
         foreach($_POST['delete'] as $del_num => $del_val){
@@ -103,7 +103,7 @@
 
     //elseif (isset($_POST['delete']) && !isset($_POST['deletebox'])) {}
     //SUBMIT IF
-    elseif (isset($_POST['testtableradio']) && isset($_POST['id_prof']) && isset($_POST['id_course'])  && !isset($_POST['deletebox'])) {
+    elseif (isset($_POST['testtableradio']) && isset($_POST['id_prof']) && isset($_POST['id_course'])) {
 
 
 
@@ -558,10 +558,8 @@ elseif(!isset($_POST["form1"])){
              </select>
            </div>
 
-           <div class="form-check">
-             <label class="whitelabel"><input class="form-check-input" type="checkbox" name="deletebox" value="" >ΕΠΙΛΕΞΤΕ ΤΟ ΚΟΥΤΑΚΙ ΑΝ ΘΕΛΕΤΕ ΝΑ ΔΙΑΓΡΑΨΕΤΕ ΚΑΠΟΙΟ ΤΜΗΜΑ</label>
-           </div>
-          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" name="form1" type="submit" value="ΥΠΟΒΟΛΗ" id="submit" disabled="disabled"></center><br> <?php } ?>
+
+          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" onclick="return postConfirm()" name="form1" type="submit" value="ΥΠΟΒΟΛΗ" id="submit" disabled="disabled"></center><br> <?php } ?>
 
       </div>
 
