@@ -60,9 +60,11 @@ $(document).ready(function(){
             document.getElementById("submit").value= "ΥΠΟΒΟΛΗ";
             }
 
+            /*
             function isChecked(checkbox, submit) {
-    document.getElementById(submit).disabled = !checkbox.checked;
-}
+              document.getElementById(submit).disabled = !checkbox.checked;
+            }
+            */
 
 
 

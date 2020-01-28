@@ -559,7 +559,7 @@ elseif(!isset($_POST["form1"])){
            </div>
 
 
-          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" onclick="return postConfirm()" name="form1" type="submit" value="ΥΠΟΒΟΛΗ" id="submit" disabled="disabled"></center><br> <?php } ?>
+          <?php if($room_avail_rows > 0) {?> <center><input class="btn btn-primary btn-lg btn-block" onclick="return postConfirm()" name="form1" type="submit" value="ΥΠΟΒΟΛΗ" id="submit"></center><br> <?php } ?>
 
       </div>
 
