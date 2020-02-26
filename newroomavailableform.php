@@ -35,7 +35,7 @@
             [
         'id_room' => $y,
         'id_ts' => $st,
-        'id_acadsem' => 1,
+        'id_acadsem' => 2,
         'available' => "Y"
             ]
   ]

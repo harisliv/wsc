@@ -360,7 +360,7 @@ label.labelformcheck2:hover {
 								</select>
 							</div>
 
-							<input class = "btn btn-primary" type="submit" name="form2">
+							<input class = "btn btn-primary" type="submit" value="ΥΠΟΒΟΛΗ" name="form2">
 							</form>
 
         </div>
