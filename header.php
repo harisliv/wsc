@@ -321,8 +321,7 @@ label.labelformcheck2:hover {
 			</span>
 			<div class="navbar-nav mr-auto navbarharis">
 				          <?php  if(isset($_SESSION["authtoken"])){ ?>
-            <a class="nav-item nav-link" href="http://localhost/wsc/searchcoursebyid.php">Εκτύπωση</a>
-            <a class="nav-item nav-link" href="http://localhost/wsc/showallcourses.php">Πρόγραμμα</a>
+            <a class="nav-item nav-link" href="http://localhost/wsc/simple_table.php" target="_blank">Εκτύπωση</a>
 					<?php  }?>
 				</div>
         <div class="navbar-nav ml-auto">

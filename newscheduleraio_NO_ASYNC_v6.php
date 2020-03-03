@@ -179,7 +179,7 @@
         if($pieces[1] === "THEORY" && $scheduler_rows_del > 0){
 
         ?><div class="alert alert-danger" role="alert"><?php
-        echo "ΣΕ ΕΝΑ ΔΙΔΑΚΤΙΚΟ ΕΞΑΜΗΝΟ ΟΙ ΘΕΩΡΙΕΣ ΔΕΝ ΠΡΕΠΕΙ ΝΑ ΔΙΔΑΣΚΟΝΤΑΙ ΤΑΥΤΟΧΡΟΜΑ ΜΕ ΚΑΠΟΙΟ ΕΡΓΑΣΤΗΡΙΟ";
+        echo "ΣΕ ΕΝΑ ΔΙΔΑΚΤΙΚΟ ΕΞΑΜΗΝΟ ΟΙ ΘΕΩΡΙΕΣ ΔΕΝ ΠΡΕΠΕΙ ΝΑ ΔΙΔΑΣΚΟΝΤΑΙ ΤΑΥΤΟΧΡΟΝΑ ΜΕ ΚΑΠΟΙΟ ΕΡΓΑΣΤΗΡΙΟ";
         ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button></div><?php
@@ -270,7 +270,7 @@ elseif(!isset($_POST["form1"])){
 
       // Initiate each request but do not block
       $promises = [
-          'course' => $client->getAsync('course_this_year.php',['headers' => $header_authtoken,'query' => ['learn_sem' => $_SESSION["learn_sem"], 'acad_sem' => $_SESSION["id_acadsem"]]]),
+          'course' => $client->getAsync('course_this_year.php',['headers' => $header_authtoken,'query' => ['learn_sem' => $_SESSION["learn_sem"], 'id_acadsem' => $_SESSION["id_acadsem"]]]),
           'room_avail'  => $client->getAsync('room_avail.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"]]]),
           'scheduler'  => $client->getAsync('scheduler.php', ['headers' => $header_authtoken,'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'learn_sem' => $_SESSION["learn_sem"]]]),
           'course_list'  => $client->getAsync('course.php', $header),
