@@ -50,20 +50,10 @@
       }
       //ΝΟ 1
       else{
-        if($_SESSION["refresh_post"] === $_POST['testtableradio'] || $_SESSION["refresh_delete"] === $_POST['delete']){
-          ?><div class="alert alert-danger" role="alert"><?php
-          echo "ΔΕΝ ΓΙΝΕΤΑΙ ΝΑ ΚΑΝΟΥΜΕ SUBMIT ΤΑ ΙΔΙΑ VALUES ME REFRESH";
-          ?><button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button></div><?php
-        }
-        //ΝΟ 2
-        else{
 
         //DELETE IF
         if (isset($_POST['delete'])) {
 
-        $_SESSION["refresh_delete"] = $_POST['delete'];
         foreach($_POST['delete'] as $del_num => $del_val){
 
         $pieces_delete = explode(",", $del_val);
@@ -139,7 +129,6 @@
 
       else{
 
-      $_SESSION["refresh_post"] = $_POST['testtableradio'];
 
       foreach($_POST['testtableradio'] as $option_num => $option_val){
       //echo $option_num." ".$option_val."<br>";
@@ -245,12 +234,8 @@
         <span aria-hidden="true">&times;</span>
       </button></div><?php
     }
-  }
+
 }
-}
-elseif(!isset($_POST["form1"])){
-  $_SESSION['refresh_post'] = 'a';
-  $_SESSION['refresh_delete'] = 'a';
 }
 
 
