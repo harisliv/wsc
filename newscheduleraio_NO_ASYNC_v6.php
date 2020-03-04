@@ -105,30 +105,23 @@
     //SUBMIT IF
     elseif (isset($_POST['testtableradio']) && isset($_POST['id_prof']) && isset($_POST['id_course'])) {
 
-
-
-
-
       $pieces = explode(",", $_POST['id_course']);
       $pieces_prof = explode(",", $_POST['id_prof']);
 
-      $header = ['headers' => ['Authorization' => $_SESSION["authtoken"]]];
+
+      $res = $client->request('GET', 'scheduler.php',
+      [
+        'headers' => ['Authorization' => $_SESSION["authtoken"]],
+        'query' =>
+        [
+          'id_acadsem' => $_SESSION["id_acadsem"],
+          'division_str' => $pieces[2]
+          ]
+        ]);
+
+      $json = json_decode($res->getBody()->getContents());
 
 
-      $promises = [
-          'getonediv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]], 'query' => ['id_acadsem' => $_SESSION["id_acadsem"], 'division_str' => $pieces[2]]])
-          ];
-
-      // Wait on all of the requests to complete. Throws a ConnectException
-      // if any of the requests fail
-      $results = Promise\unwrap($promises);
-
-      // Wait for the requests to complete, even if some of them fail
-      $results = Promise\settle($promises)->wait();
-
-      $body = $results['getonediv']['value']->getBody();
-      $string = $body->getContents();
-      $json = json_decode($string);
       //$getdivision_array = $json->data->schedulers;
       $arranged_one = $json->data->rows_returned;
 
@@ -150,7 +143,6 @@
 
       foreach($_POST['testtableradio'] as $option_num => $option_val){
       //echo $option_num." ".$option_val."<br>";
-      //$room_avail_header = ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => ['id_acadsem' => $_SESSION["id_acadsem"],'id' => $option_val ]];
       $pieces_room_avail = explode(",", $option_val);
 
       $res = $client->request('GET', 'room_avail.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],'query' => [
@@ -343,25 +335,20 @@ elseif(!isset($_POST["form1"])){
                    if ($course_list_array[$x]->count_div_lab > 0) {
                    for ($y = 1; $y <= $course_list_array[$x]->count_div_lab; $y++){
 
-                     $promises = [
-                         'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],
-                         'query' =>
-                         [
-                           'id_acadsem' => $_SESSION["id_acadsem"],
-                           'division_str' => $y . "/" . "Ε" . "/" . $course_list_array[$x]->name]])
-                         ];
 
-                     // Wait on all of the requests to complete. Throws a ConnectException
-                     // if any of the requests fail
-                     $results = Promise\unwrap($promises);
+                     $res = $client->request('GET', 'scheduler.php',
+                     [
+                       'headers' => ['Authorization' => $_SESSION["authtoken"]],
+                       'query' =>
+                       [
+                       'id_acadsem' => $_SESSION["id_acadsem"],
+                       'division_str' => $y . "/" . "Ε" . "/" . $course_list_array[$x]->name
+                       ]
+                     ]
+                     );
 
-                     // Wait for the requests to complete, even if some of them fail
-                     $results = Promise\settle($promises)->wait();
+                     $json = json_decode($res->getBody()->getContents());
 
-                     $body = $results['getdiv']['value']->getBody();
-                     $string = $body->getContents();
-                     $json = json_decode($string);
-                     //$getdivision_array = $json->data->schedulers;
                      $arranged = $json->data->rows_returned;
 
                      for ($z = 0; $z < $courses_rows; $z++) {
@@ -410,26 +397,19 @@ elseif(!isset($_POST["form1"])){
                      if ($course_list_array[$x]->count_div_theory > 0) {
                      for ($y = 1; $y <= $course_list_array[$x]->count_div_theory; $y++){
 
-                       $promises = [
-                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],
-                           'query' =>
-                           [
-                             'id_acadsem' => $_SESSION["id_acadsem"],
-                             'division_str' => $y . "/" . "Θ" . "/" . $course_list_array[$x]->name
-                             ]
-                           ])];
+                       $res = $client->request('GET', 'scheduler.php',
+                       [
+                         'headers' => ['Authorization' => $_SESSION["authtoken"]],
+                         'query' =>
+                         [
+                         'id_acadsem' => $_SESSION["id_acadsem"],
+                         'division_str' => $y . "/" . "Θ" . "/" . $course_list_array[$x]->name
+                         ]
+                       ]
+                       );
 
-                       // Wait on all of the requests to complete. Throws a ConnectException
-                       // if any of the requests fail
-                       $results = Promise\unwrap($promises);
+                       $json = json_decode($res->getBody()->getContents());
 
-                       // Wait for the requests to complete, even if some of them fail
-                       $results = Promise\settle($promises)->wait();
-
-                       $body = $results['getdiv']['value']->getBody();
-                       $string = $body->getContents();
-                       $json = json_decode($string);
-                       //$getdivision_array = $json->data->schedulers;
                        $arranged = $json->data->rows_returned;
 
                        for ($z = 0; $z < $courses_rows; $z++) {
@@ -478,26 +458,19 @@ elseif(!isset($_POST["form1"])){
                      if ($course_list_array[$x]->count_div_practice > 0) {
                      for ($y = 1; $y <= $course_list_array[$x]->count_div_practice; $y++){
 
-                       $promises = [
-                           'getdiv'  => $client->getAsync('scheduler.php', ['headers' => ['Authorization' => $_SESSION["authtoken"]],
-                           'query' =>
-                           [
-                             'id_acadsem' => $_SESSION["id_acadsem"],
-                             'division_str' => $y . "/" . "ΑΠ" . "/" . $course_list_array[$x]->name
-                           ]
-                           ])];
+                       $res = $client->request('GET', 'scheduler.php',
+                       [
+                         'headers' => ['Authorization' => $_SESSION["authtoken"]],
+                         'query' =>
+                         [
+                         'id_acadsem' => $_SESSION["id_acadsem"],
+                         'division_str' => $y . "/" . "ΑΠ" . "/" . $course_list_array[$x]->name
+                         ]
+                       ]
+                       );
 
-                       // Wait on all of the requests to complete. Throws a ConnectException
-                       // if any of the requests fail
-                       $results = Promise\unwrap($promises);
+                       $json = json_decode($res->getBody()->getContents());
 
-                       // Wait for the requests to complete, even if some of them fail
-                       $results = Promise\settle($promises)->wait();
-
-                       $body = $results['getdiv']['value']->getBody();
-                       $string = $body->getContents();
-                       $json = json_decode($string);
-                       //$getdivision_array = $json->data->schedulers;
                        $arranged = $json->data->rows_returned;
 
                        for ($z = 0; $z < $courses_rows; $z++) {

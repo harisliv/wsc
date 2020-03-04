@@ -446,7 +446,7 @@ body {
   <div class="card"></div>
   <div class="card">
     <h1 class="title">Login</h1>
-    <form>
+    <form action="newscheduleraio_NO_ASYNC_v6.php" method="post">
       <div class="input-container">
         <input type="#{type}" id="#{label}" required="required"/>
         <label for="#{label}">Username</label>
