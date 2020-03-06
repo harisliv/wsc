@@ -42,10 +42,10 @@ body {
   font-size: 12px;
 }
 .pen-title span .fa {
-  color: #ed2553;
+  color: #007bff;
 }
 .pen-title span a {
-  color: #ed2553;
+  color: #007bff;
   font-weight: 600;
   text-decoration: none;
 }
@@ -58,7 +58,7 @@ body {
 .rerun a {
   cursor: pointer;
   display: inline-block;
-  background: #ed2553;
+  background: #007bff;
   border-radius: 3px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   padding: 10px 20px;
@@ -95,7 +95,7 @@ body {
 #portfolio {
   bottom: 96px;
   right: 36px;
-  background: #ed2553;
+  background: #007bff;
   width: 44px;
   height: 44px;
   -webkit-animation: buttonFadeInUp 1s ease;
@@ -193,10 +193,10 @@ body {
 .card .title {
   position: relative;
   z-index: 1;
-  border-left: 5px solid #ed2553;
+  border-left: 5px solid #007bff;
   margin: 0 0 35px;
   padding: 10px 0 10px 50px;
-  color: #ed2553;
+  color: #007bff;
   font-size: 32px;
   font-weight: 600;
   text-transform: uppercase;
@@ -251,7 +251,7 @@ body {
 .card .input-container .bar:before, .card .input-container .bar:after {
   content: '';
   position: absolute;
-  background: #ed2553;
+  background: #007bff;
   width: 0;
   height: 2px;
   transition: .2s ease;
@@ -294,7 +294,7 @@ body {
   top: 50%;
   left: 50%;
   display: block;
-  background: #ed2553;
+  background: #007bff;
   width: 30px;
   height: 30px;
   border-radius: 100%;
@@ -303,10 +303,10 @@ body {
   transition: .3s ease;
 }
 .card .button-container button:hover, .card .button-container button:active, .card .button-container button:focus {
-  border-color: #ed2553;
+  border-color: #007bff;
 }
 .card .button-container button:hover span, .card .button-container button:active span, .card .button-container button:focus span {
-  color: #ed2553;
+  color: #007bff;
 }
 .card .button-container button:active span, .card .button-container button:focus span {
   color: #ffffff;
@@ -350,7 +350,7 @@ body {
 }
 .card.alt .toggle {
   position: relative;
-  background: #ed2553;
+  background: #007bff;
   width: 140px;
   height: 140px;
   border-radius: 100%;
@@ -420,7 +420,7 @@ body {
   border-color: #ffffff;
 }
 .card.alt .button-container button span {
-  color: #ed2553;
+  color: #007bff;
 }
 .card.alt .button-container button:hover {
   background: rgba(255, 255, 255, 0.9);

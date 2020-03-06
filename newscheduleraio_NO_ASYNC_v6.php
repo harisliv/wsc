@@ -91,7 +91,6 @@
       }
     }
 
-    //elseif (isset($_POST['delete']) && !isset($_POST['deletebox'])) {}
     //SUBMIT IF
     elseif (isset($_POST['testtableradio']) && isset($_POST['id_prof']) && isset($_POST['id_course'])) {
 
@@ -112,7 +111,6 @@
       $json = json_decode($res->getBody()->getContents());
 
 
-      //$getdivision_array = $json->data->schedulers;
       $arranged_one = $json->data->rows_returned;
 
       $checked_arr = $_POST['testtableradio'];
@@ -255,16 +253,10 @@
           'professor'  => $client->getAsync('professor.php', $header)
       ];
 
-      // Wait on all of the requests to complete. Throws a ConnectException
-      // if any of the requests fail
       $results = Promise\unwrap($promises);
 
-      // Wait for the requests to complete, even if some of them fail
       $results = Promise\settle($promises)->wait();
 
-      // You can access each result using the key provided to the unwrap
-      // function.
-      //echo $results['course']['value']->getStatusCode();
       $body = $results['room_avail']['value']->getBody();
       $string = $body->getContents();
       $json = json_decode($string);
@@ -305,12 +297,7 @@
       ?>
 
       <form action="newscheduleraio_NO_ASYNC_v6.php" method="post">
-
-
-      <div class="sidenav">
-
-
-
+        <div class="sidenav">
         <div class='form-group'>
             <label style="color:white;">ΕΠΙΛΟΓΗ ΜΑΘΗΜΑΤΟΣ</label>
             <div class="form-group">
@@ -349,10 +336,7 @@
                        <option disabled>
 
                          <?php
-
-                         //echo $y . ") Lab Division:";
                          echo " ". $course_list_array[$x]->name . " [ΕΡΓ. " . $y . "]<br>";
-
                          ?>
                          </option>
 
@@ -363,10 +347,7 @@
                      <option class="lab" value="<?php echo $course_list_array[$x]->id_course . "," . "LAB" . "," . $y . "/" . "Ε" . "/" . $course_list_array[$x]->name . "," . $lab_hours; ?>">
 
                        <?php
-
                        echo $course_list_array[$x]->name . " [ΕΡΓ-" . $y . "] ΩΡΕΣ:" . $hoursleft . "<br>";
-
-
                          ?>
                          </option>
                          <?php }
@@ -410,10 +391,7 @@
                          <option value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "THEORY" . "/" . $course_list_array[$x]->name; ?>" disabled>
 
                            <?php
-
                            echo " ". $course_list_array[$x]->name . " [ΘΕΩ. " . $y . "]<br>";
-
-
                            ?>
                            </option>
 
@@ -424,10 +402,7 @@
                        <option class="theory" name="theory" value="<?php echo $course_list_array[$x]->id_course . "," . "THEORY" . "," . $y . "/" . "Θ" . "/" . $course_list_array[$x]->name . "," . $theory_hours; ?>">
 
                          <?php
-
                          echo $course_list_array[$x]->name . " [ΘΕΩ-" . $y . "] ΩΡΕΣ:" . $hoursleft . "<br>";
-
-
                            ?>
                            </option>
                            <?php }
@@ -471,10 +446,7 @@
                          <option value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "PRACTICE" . "/" . $course_list_array[$x]->name; ?>" disabled>
 
                            <?php
-
                            echo " ". $course_list_array[$x]->name . " [ΠΡΑΚ. " . $y . "]<br>";
-
-
                            ?>
                            </option>
 
@@ -485,10 +457,7 @@
                        <option class="practice" value="<?php echo $course_list_array[$x]->id_course . "," . "PRACTICE" . "," . $y . "/" . "ΑΠ" . "/" . $course_list_array[$x]->name . "," . $practice_hours; ?>">
 
                          <?php
-
                          echo $course_list_array[$x]->name . " [ΠΡΑΚ-" . $y . "] ΩΡΕΣ:" . $hoursleft . "<br>";
-
-
                            ?>
                            </option>
                            <?php }
@@ -579,13 +548,12 @@
                   <?php
                 }
 
-                elseif ($scheduled_rows == 0){
-                  //echo "shit<br>";
-                }
+                elseif ($scheduled_rows == 0){}
+
                   }
 
                   if($room_avail_array[$z]->id_ts == $id_ts && $room_avail_array[$z]->id_room == $id_room && $room_avail_array[$z]->available == "Y"){
-                    //echo "kalos" . $room_avail_array[$z]->id_ts . " " . $room_avail_array[$z]->id_room . ") ";
+                    //echo "" . $room_avail_array[$z]->id_ts . " " . $room_avail_array[$z]->id_room . ") ";
                     ?><div class="form-check harisformcheck"><label class="labelformcheck" data-toggle="tooltip" data-placement="top" title="Επιλογή αίθουσας">
                     <input onclick="myFunctionSubmit()" onchange="isChecked(this, 'submit')" class="form-check-input inputjsred" type="checkbox" name="testtableradio[<?php echo $id_room . "" . $id_ts;?>]" value="<?php echo $id_room . "," . $id_ts . "," . $room_list_array[$y]->room_code; ?>" >
                     <?php
@@ -593,56 +561,27 @@
                     echo $room_list_array[$y]->lektiko_room . "</label>"; ?>
                   </div>
                     <?php
-
                   }
-
                 }
-
               }
-
               ?>
-
             </td>
             <?php } ?>
           </tr>
         <?php } ?>
-
         </tbody>
       </table>
-
-          </form>
-
-
-
-        </div>
-
-
-
-
-
-
-        <?php
-
-
-
-    }catch (GuzzleHttp\Exception\BadResponseException $e) {
+    </form>
+  </div>
+  <?php
+}catch (GuzzleHttp\Exception\BadResponseException $e) {
             $response = $e->getResponse();
             $responseBodyAsString = (string) $response->getBody();
             $json = json_decode($responseBodyAsString);
             $responsestatuscode = $response->getStatusCode();
             $messages = $json->messages;
         }
-
-
      ?>
+  <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
 
-
-      <center><h1><?php foreach($messages as $value) { echo $value . "<br>"; } ?></h1></center>
-
-
-
-
-
-
-
-       <?php footernav(); ?>
+<?php footernav(); ?>
