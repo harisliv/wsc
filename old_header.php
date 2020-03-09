@@ -347,15 +347,13 @@ label.labelformcheck2:hover {
 								<div class="form-group">
 								<select class="form-control" id="exampleFormControlSelect1" name="learn_sem">
 									<?php
-									$learnsem_eng = array("A", "B", "C", "D", "E", "F", "G");
-									$learnsem_gr = array("Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η");
 									if(isset($_SESSION["learn_sem"])) {?>
 										<option value="<?php echo $_SESSION["learn_sem"]?>"><b><?php echo $_SESSION["learn_sem"]?></b></option>
-									<?php } for($i = 0; $i < 7; $i++)
+									<?php } for($i = 'A'; $i < 'G'; $i++)
 									{
-										if($learnsem_eng[$i] !== $_SESSION["learn_sem"]){?>
+										if($i !== $_SESSION["learn_sem"]){?>
 
-									<option value="<?php echo $learnsem_eng[$i] ?>"><?php echo $learnsem_gr[$i] ?></option>
+									<option value="<?php echo $i ?>"><?php echo $i ?></option>
 								<?php }} ?>
 
 								</select>
