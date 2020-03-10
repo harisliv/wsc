@@ -349,9 +349,15 @@ label.labelformcheck2:hover {
 									<?php
 									$learnsem_eng = array("A", "B", "C", "D", "E", "F", "G");
 									$learnsem_gr = array("Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η");
-									if(isset($_SESSION["learn_sem"])) {?>
-										<option value="<?php echo $_SESSION["learn_sem"]?>"><b><?php echo $_SESSION["learn_sem"]?></b></option>
-									<?php } for($i = 0; $i < 7; $i++)
+									if(isset($_SESSION["learn_sem"])) {
+										for($i = 0; $i < 7; $i++)
+										{
+											if($learnsem_eng[$i] == $_SESSION["learn_sem"]){?>
+										<option value="<?php echo $_SESSION["learn_sem"]?>"><b><?php echo $learnsem_gr[$i]?></b></option>
+									<?php }
+								}
+							}
+							for($i = 0; $i < 7; $i++)
 									{
 										if($learnsem_eng[$i] !== $_SESSION["learn_sem"]){?>
 
